@@ -1,4 +1,4 @@
-package com.cooksys.spring_assessment_social_media_june_2024_team_3;
+package com.cooksys.app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
