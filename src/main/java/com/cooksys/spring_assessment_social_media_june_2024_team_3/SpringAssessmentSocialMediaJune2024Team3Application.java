@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringAssessmentSocialMediaJune2024Team3Application {
 
 	public static void main(String[] args) {
+		//Test Commit
 		SpringApplication.run(SpringAssessmentSocialMediaJune2024Team3Application.class, args);
 	}
 
