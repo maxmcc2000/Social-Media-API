@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,7 +25,15 @@ public class Tweet {
     private String content;
     private Tweet inReplyTo;
     private Tweet repostOf;
-
+    
+    @ManyToMany
+    @JoinTable(
+            name = "tweet_hashtags",
+            joinColumns = @JoinColumn(name = "tweet_id"),
+            inverseJoinColumns = @JoinColumn(name = "hashtag_id")
+        )
+    private List<Hashtag> hashtags = new ArrayList<>(); //New field to relate with hashtags in a many to many relationship
+    
     public Tweet(Long id, User author, Timestamp posted, String content) {
         this.id = id;
         this.author = author;
