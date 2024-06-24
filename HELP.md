@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.cooksys.spring-assessment-social-media-june-2024-team-3' is invalid and this project uses 'com.cooksys.spring_assessment_social_media_june_2024_team_3' instead.
+* The original package name 'com.cooksys.spring-assessment-social-media-june-2024-team-3' is invalid and this project uses 'com.cooksys.app' instead.
 
 # Getting Started
 
