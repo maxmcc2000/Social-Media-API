@@ -40,4 +40,12 @@ public class Hashtag {
     protected void onLoad() {
     	lastUsed = LocalDateTime.now();
     }
+    
+    @PrePersist
+    @PreUpdate
+    private void formatLabel() { //Making our labels case insensitive
+        if (label != null) {
+            label = label.toLowerCase();
+        }
+    }
 }
