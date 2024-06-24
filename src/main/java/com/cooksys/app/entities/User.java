@@ -1,5 +1,6 @@
 package com.cooksys.app.entities;
 
+import com.cooksys.app.entities.Credentials;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
