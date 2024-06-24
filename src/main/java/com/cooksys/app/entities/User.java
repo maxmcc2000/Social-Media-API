@@ -1,5 +1,6 @@
-package com.cooksys.spring_assessment_social_media_june_2024_team_3.entities;
+package com.cooksys.app.entities;
 
+import com.cooksys.app.entities.Credentials;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
