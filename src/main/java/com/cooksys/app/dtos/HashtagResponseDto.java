@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class HashtagResponseDto {
-	//This DTO should return Id, Label, firstUsed, and lastUsed
-	private Long id;
+	//This DTO should return Label, firstUsed, and lastUsed
 	
 	private String label;
 	
