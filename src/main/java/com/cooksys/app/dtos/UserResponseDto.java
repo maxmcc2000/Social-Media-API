@@ -11,6 +11,5 @@ public class UserResponseDto {
 
     private String username;
 
-    @Embedded
     private Profile profile;
 }

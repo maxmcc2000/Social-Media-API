@@ -1,5 +1,6 @@
 package com.cooksys.app.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserRequestDto {
 
-    private String username;
+    @JsonProperty("credentials")
+    private CredentialsDto credentialsDto;
+
+    @JsonProperty("profile")
+    private ProfileDto profileDto;
 
 }
