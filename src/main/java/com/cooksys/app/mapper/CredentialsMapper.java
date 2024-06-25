@@ -4,10 +4,10 @@ import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.entities.Credentials;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring" )
 public interface CredentialsMapper {
 
-    CredentialsDto entityToDto(Credentials);
+    CredentialsDto entityToDto(Credentials entity);
 
-    Credentials DtoToEntity(CredentialsDto);
+    Credentials DtoToEntity(CredentialsDto credDTO);
 }
