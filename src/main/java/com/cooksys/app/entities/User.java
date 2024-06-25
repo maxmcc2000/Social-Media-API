@@ -21,9 +21,9 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    // After deleting username, it causes an error in followUser and unfollowUser methods in UserServiceImpl
-//    @Column(name = "username", nullable = false, insertable = false, updatable = false)
-//    private String username;
+     //After deleting username, it causes an error in followUser and unfollowUser methods in UserServiceImpl
+    @Column(name = "username", nullable = false, insertable = false, updatable = false)
+    private String username;
 
     @CreationTimestamp
     @Column
