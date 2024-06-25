@@ -30,7 +30,16 @@ public class Hashtag {
     @ManyToMany(mappedBy = "hashtags") //We use this field to allow mapping between hashtags and tweets in a many to many relationship
     private List<Tweet> tweets = new ArrayList<>();
     
+    
+    
+    //run the PrePersist methods here
     @PrePersist
+    protected void prepersistMethods() {
+    	onCreate();
+    	formatLabel();
+    }
+    
+   // @PrePersist
     protected void onCreate() {
     	firstUsed = LocalDateTime.now();
     	lastUsed = firstUsed;
@@ -41,7 +50,7 @@ public class Hashtag {
     	lastUsed = LocalDateTime.now();
     }
     
-    @PrePersist
+    //@PrePersist
     @PreUpdate
     private void formatLabel() { //Making our labels case insensitive
         if (label != null) {
