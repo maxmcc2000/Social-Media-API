@@ -2,6 +2,7 @@ package com.cooksys.app.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Tweet {
 
     @Id
@@ -33,7 +35,8 @@ public class Tweet {
             inverseJoinColumns = @JoinColumn(name = "hashtag_id")
         )
     private List<Hashtag> hashtags = new ArrayList<>(); //New field to relate with hashtags in a many to many relationship
-    
+
+
     public Tweet(Long id, User author, Timestamp posted, String content) {
         this.id = id;
         this.author = author;
@@ -55,4 +58,5 @@ public class Tweet {
         this.content = content;
         this.inReplyTo = inReplyTo;
     }
+
 }

@@ -41,7 +41,7 @@ public class Hashtag {
     	lastUsed = LocalDateTime.now();
     }
     
-    @PrePersist
+    //@PrePersist
     @PreUpdate
     private void formatLabel() { //Making our labels case insensitive
         if (label != null) {

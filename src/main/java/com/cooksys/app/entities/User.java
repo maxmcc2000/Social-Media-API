@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "user_table")
@@ -33,5 +34,13 @@ public class User {
 
     @Embedded
     private Credentials credentials;
+
+    @ManyToMany
+    @JoinTable(
+            name = "followers_following",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
+    private List<User> following;
 
 }

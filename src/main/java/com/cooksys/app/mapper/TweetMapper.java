@@ -10,5 +10,6 @@ public interface TweetMapper {
 
     TweetResponseDto entityTodto(Tweet entity);
 
-    Tweet TweetToEntity(Tweet pDto);
+    //Tweet TweetToEntity(Tweet pDto);
+    //removed "TweetToEntity". Tweet is an Entity so unneeded and uncompilable
 }
