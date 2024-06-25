@@ -22,9 +22,12 @@ public class Tweet {
 
     @Column(nullable = false)
     private Timestamp posted;
-
+    
     private String content;
+    
+    @ManyToOne
     private Tweet inReplyTo;
+    @ManyToOne
     private Tweet repostOf;
     
     @ManyToMany
