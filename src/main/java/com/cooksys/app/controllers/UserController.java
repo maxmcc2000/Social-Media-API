@@ -1,6 +1,7 @@
 package com.cooksys.app.controllers;
 
 import com.cooksys.app.dtos.CredentialsDto;
+import com.cooksys.app.dtos.UserRequestDto;
 import com.cooksys.app.dtos.UserResponseDto;
 import com.cooksys.app.entities.User;
 import com.cooksys.app.services.UserService;
@@ -34,6 +35,10 @@ public class UserController {
     @GetMapping
     public List<UserResponseDto> getAllUsers(){
         return userService.getAllUsers();
+    }
+    @PostMapping
+    public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
+        return userService.createUser(userRequestDto);
     }
 
 }

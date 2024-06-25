@@ -2,6 +2,10 @@ package com.cooksys.app.entities;
 
 import jakarta.persistence.Embeddable;
 import lombok.Data;
+import lombok.NonNull;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @Embeddable
 @Data

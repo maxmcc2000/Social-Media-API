@@ -1,12 +1,16 @@
 package com.cooksys.app.services.impl;
 
 import com.cooksys.app.dtos.CredentialsDto;
+import com.cooksys.app.dtos.UserRequestDto;
 import com.cooksys.app.dtos.UserResponseDto;
+import com.cooksys.app.entities.Credentials;
+import com.cooksys.app.entities.Profile;
 import com.cooksys.app.entities.User;
 import com.cooksys.app.exceptions.BadRequestException;
 import com.cooksys.app.exceptions.NotAuthorizedException;
 import com.cooksys.app.exceptions.NotFoundException;
 import com.cooksys.app.mapper.CredentialsMapper;
+import com.cooksys.app.mapper.ProfileMapper;
 import com.cooksys.app.mapper.UserMapper;
 import com.cooksys.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final CredentialsMapper credentialsMapper;
+    private final ProfileMapper profileMapper;
 
     @Override
     public void followUser(CredentialsDto credentialsDto, String username) {
@@ -85,6 +90,36 @@ public class UserServiceImpl implements UserService {
         }
         //System.out.println(notDeleted.get(0).toString());
         return userMapper.entitiesToDtos(notDeleted);
+    }
+
+    @Override
+    public UserResponseDto createUser(UserRequestDto userRequestDto) {
+        User newUser = userMapper.DtoToEntity(userRequestDto);
+        Credentials credentials = credentialsMapper.DtoToEntity(userRequestDto.getCredentialsDto());
+        Profile profile = profileMapper.DtoToEntity(userRequestDto.getProfileDto());
+        newUser.setCredentials(credentials);
+        newUser.setProfile(profile);
+//        System.out.println(userRequestDto);
+//        System.out.println(newUser.toString());
+        //if any required fields are missing
+        if (newUser.getCredentials() == null || newUser.getProfile() == null || profile.getEmail() == null) {
+            throw new BadRequestException("One or more required fields are missing.");
+        }
+        //if this username is found in the database
+        if (userRepository.findByCredentialsUsername(newUser.getCredentials().getUsername()) != null) {
+            User existingUser = userRepository.findByCredentialsUsername(newUser.getCredentials().getUsername());
+            //if the given credentials match a deleted user
+            if (existingUser.isDeleted() && existingUser.getCredentials().equals(newUser.getCredentials())){
+                existingUser.setDeleted(false);
+                return userMapper.entityToDto(existingUser);
+            } else {
+                //username already taken
+                throw new NotAuthorizedException("Username is already taken.");
+            }
+        } else {
+            newUser.setDeleted(false);
+            return userMapper.entityToDto(userRepository.saveAndFlush(newUser));
+        }
     }
 
 }
