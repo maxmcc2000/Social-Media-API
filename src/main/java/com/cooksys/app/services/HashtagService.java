@@ -1,5 +1,9 @@
 package com.cooksys.app.services;
 
-public interface HashtagService {
+import java.util.List;
 
+import com.cooksys.app.dtos.HashtagResponseDto;
+
+public interface HashtagService {
+	List<HashtagResponseDto> getAllHashtags();
 }

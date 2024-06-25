@@ -21,6 +21,21 @@ public class Seeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+    	// ----- HASHTAGS -----
+
+        Hashtag hashtag1 = new Hashtag();
+        hashtag1.setLabel("#eldenlord");
+
+        Hashtag hashtag2 = new Hashtag();
+        hashtag2.setLabel("#mario");
+
+        Hashtag hashtag3 = new Hashtag();
+        hashtag3.setLabel("#luigi");
+
+        Hashtag hashtag4 = new Hashtag();
+        hashtag4.setLabel("#whereiscortana");
+
+        hashtagRepository.saveAllAndFlush(Arrays.asList(hashtag1, hashtag2, hashtag3, hashtag4));
 
         // --- User 1 ---
         // Credentials
@@ -140,22 +155,7 @@ public class Seeder implements CommandLineRunner {
         deletedUser.setDeleted(true);
         userRepository.saveAllAndFlush(Arrays.asList(user1, user2, user3, user4, user5, deletedUser));
 
-        // ----- HASHTAGS -----
-
-        Hashtag hashtag1 = new Hashtag();
-        hashtag1.setLabel("#eldenlord");
-
-        Hashtag hashtag2 = new Hashtag();
-        hashtag2.setLabel("#mario");
-
-        Hashtag hashtag3 = new Hashtag();
-        hashtag3.setLabel("#luigi");
-
-        Hashtag hashtag4 = new Hashtag();
-        hashtag4.setLabel("#whereiscortana");
-
-        hashtagRepository.saveAllAndFlush(Arrays.asList(hashtag1, hashtag2, hashtag3, hashtag4));
-
+        
 //	    // ----- TWEETS -----
         // --- Start Tweet 1 ---
         Tweet tweet1 = new Tweet();
