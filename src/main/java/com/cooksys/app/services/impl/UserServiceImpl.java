@@ -1,6 +1,7 @@
 package com.cooksys.app.services.impl;
 
 import com.cooksys.app.dtos.CredentialsDto;
+import com.cooksys.app.dtos.UserResponseDto;
 import com.cooksys.app.entities.User;
 import com.cooksys.app.exceptions.BadRequestException;
 import com.cooksys.app.exceptions.NotAuthorizedException;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import com.cooksys.app.services.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,6 +74,17 @@ public class UserServiceImpl implements UserService {
         } user.getFollowing().remove(userRepository.findByUsername(username));
         userRepository.saveAndFlush(user);
 
+    }
+
+    @Override
+    public List<UserResponseDto> getAllUsers() {
+        List<User> notDeleted = new ArrayList<>();
+        for (User user : userRepository.findAll()) {
+            //System.out.println(user.getProfile());
+            if (!user.isDeleted()) notDeleted.add(user);
+        }
+        //System.out.println(notDeleted.get(0).toString());
+        return userMapper.entitiesToDtos(notDeleted);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.cooksys.app.controllers;
 
 import com.cooksys.app.dtos.CredentialsDto;
+import com.cooksys.app.dtos.UserResponseDto;
 import com.cooksys.app.entities.User;
 import com.cooksys.app.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,11 @@ public class UserController {
     @PostMapping("/@{username}/unfollow")
     public void unfollowUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
         userService.unfollowUser(credentialsDto, username);
+    }
+
+    @GetMapping
+    public List<UserResponseDto> getAllUsers(){
+        return userService.getAllUsers();
     }
 
 }
