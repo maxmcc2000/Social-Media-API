@@ -1,6 +1,7 @@
 package com.cooksys.app.services;
 
 import com.cooksys.app.dtos.CredentialsDto;
+import com.cooksys.app.dtos.UserRequestDto;
 import com.cooksys.app.dtos.UserResponseDto;
 import com.cooksys.app.entities.User;
 
@@ -15,4 +16,6 @@ public interface UserService {
     void unfollowUser(CredentialsDto credentialsDto, String username);
 
     List<UserResponseDto> getAllUsers();
+
+    UserResponseDto createUser(UserRequestDto userRequestDto);
 }

@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.beans.factory.annotation.Value;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -19,10 +21,6 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
-
-     //After deleting username, it causes an error in followUser and unfollowUser methods in UserServiceImpl
-    @Column(name = "username", nullable = false, insertable = false, updatable = false)
-    private String username;
 
     @CreationTimestamp
     @Column
