@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.app.dtos.HashtagResponseDto;
 import com.cooksys.app.dtos.TweetResponseDto;
+import com.cooksys.app.services.HashtagService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,10 +16,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/tags")
 public class HashtagController {
+	private final HashtagService hashtagService;
 	
 	@GetMapping
 	public List<HashtagResponseDto> getAllHashtags() {
-		return null;
+		//Call hashtag service
+		List<HashtagResponseDto> allHashtagsDto = hashtagService.getAllHashtags();
+		return allHashtagsDto;
 	}
 	
 	@GetMapping("{label}")
