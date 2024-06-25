@@ -1,5 +1,6 @@
 package com.cooksys.app.entities;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +23,10 @@ public class Hashtag {
     private String label;
     
     @Column(nullable = false, updatable = false)
-    private LocalDateTime firstUsed;
+    private Timestamp firstUsed;
     
     @Column(nullable = false)
-    private LocalDateTime lastUsed;
+    private Timestamp lastUsed;
     
     @ManyToMany(mappedBy = "hashtags") //We use this field to allow mapping between hashtags and tweets in a many to many relationship
     private List<Tweet> tweets = new ArrayList<>();
@@ -33,7 +34,7 @@ public class Hashtag {
     @PrePersist
     protected void onCreate() { //When first uploading to the DB, we make sure to
     	//Set the timestamps, and format the label to be case insensitive.
-    	firstUsed = LocalDateTime.now();
+    	firstUsed = Timestamp.valueOf(LocalDateTime.now());
     	lastUsed = firstUsed;
     	if (label != null) {
             label = label.toLowerCase();

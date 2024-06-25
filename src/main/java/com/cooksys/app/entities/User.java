@@ -42,6 +42,14 @@ public class User {
     )
     private List<User> following;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_mentions",
+            joinColumns = @JoinColumn(name = "tweet_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<Tweet> mentions;
+
     @Column(nullable = false)
     boolean deleted;
 

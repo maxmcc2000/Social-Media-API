@@ -38,27 +38,7 @@ public class Tweet {
         )
     private List<Hashtag> hashtags = new ArrayList<>(); //New field to relate with hashtags in a many to many relationship
 
-
-    public Tweet(Long id, User author, Timestamp posted, String content) {
-        this.id = id;
-        this.author = author;
-        this.posted = posted;
-        this.content = content;
-    }
-
-    public Tweet(Long id, User author, Timestamp posted, Tweet repostOf) {
-        this.id = id;
-        this.author = author;
-        this.posted = posted;
-        this.repostOf = repostOf;
-    }
-
-    public Tweet(Long id, User author, Timestamp posted, String content, Tweet inReplyTo) {
-        this.id = id;
-        this.author = author;
-        this.posted = posted;
-        this.content = content;
-        this.inReplyTo = inReplyTo;
-    }
+    @ManyToMany(mappedBy = "mentions")
+    private List<User> mentionedUsers;
 
 }
