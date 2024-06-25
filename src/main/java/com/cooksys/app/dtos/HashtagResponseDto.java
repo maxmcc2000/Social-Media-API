@@ -1,6 +1,7 @@
 package com.cooksys.app.dtos;
 
-import java.time.LocalDateTime;
+
+import java.sql.Timestamp;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,12 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class HashtagResponseDto {
-	//This DTO should return Id, Label, firstUsed, and lastUsed
-	private Long id;
+	//This DTO should return Label, firstUsed, and lastUsed
 	
 	private String label;
 	
-	private LocalDateTime firstUsed;
+	private Timestamp firstUsed;
 	
-	private LocalDateTime lastUsed;
+	private Timestamp lastUsed;
 }
