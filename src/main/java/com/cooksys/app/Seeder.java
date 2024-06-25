@@ -23,38 +23,38 @@ public class Seeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
     	// ----- HASHTAGS -----
 
-        Hashtag hashtag1 = new Hashtag();
-        hashtag1.setLabel("#eldenlord");
-
-        Hashtag hashtag2 = new Hashtag();
-        hashtag2.setLabel("#mario");
-
-        Hashtag hashtag3 = new Hashtag();
-        hashtag3.setLabel("#luigi");
-
-        Hashtag hashtag4 = new Hashtag();
-        hashtag4.setLabel("#whereiscortana");
-
-        hashtagRepository.saveAllAndFlush(Arrays.asList(hashtag1, hashtag2, hashtag3, hashtag4));
-
-        // --- User 1 ---
-        Credentials user1Cred = new Credentials();
-        user1Cred.setUsername("therealmc");
-        user1Cred.setPassword("Password");
-
-        User user1 = new User();
-        user1.setDeleted(false);
-        user1.setCredentials(user1Cred);
-
-        Profile user1Pro = new Profile();
-        user1Pro.setFirstName("Master");
-        user1Pro.setLastName("Chief");
-        user1Pro.setEmail("sierra117@email.com");
-        user1Pro.setPhone("123-456-7890");
-        user1.setProfile(user1Pro);
+//        Hashtag hashtag1 = new Hashtag();
+//        hashtag1.setLabel("#eldenlord");
+//
+//        Hashtag hashtag2 = new Hashtag();
+//        hashtag2.setLabel("#mario");
+//
+//        Hashtag hashtag3 = new Hashtag();
+//        hashtag3.setLabel("#luigi");
+//
+//        Hashtag hashtag4 = new Hashtag();
+//        hashtag4.setLabel("#whereiscortana");
+//
+//        hashtagRepository.saveAllAndFlush(Arrays.asList(hashtag1, hashtag2, hashtag3, hashtag4));
+//
+//        // --- User 1 ---
+//        Credentials user1Cred = new Credentials();
+//        user1Cred.setUsername("therealmc");
+//        user1Cred.setPassword("Password");
+//
+//        User user1 = new User();
+//        user1.setDeleted(false);
+//        user1.setCredentials(user1Cred);
+//
+//        Profile user1Pro = new Profile();
+//        user1Pro.setFirstName("Master");
+//        user1Pro.setLastName("Chief");
+//        user1Pro.setEmail("sierra117@email.com");
+//        user1Pro.setPhone("123-456-7890");
+//        user1.setProfile(user1Pro);
         //System.out.println(user1Pro.toString());
 
-        userRepository.saveAllAndFlush(Arrays.asList(user1));
+        //userRepository.saveAllAndFlush(Arrays.asList(user1));
         // --- User 1 ---
         // Credentials
     	/*

@@ -15,12 +15,12 @@ public class ValidateServiceImpl implements ValidateService{
 
     @Override
     public boolean isUsernameAvailable(String username) {
-        return !userRepository.existsByUsername(username);
+        return !userRepository.existsByCredentialsUsername(username);
     }
 
     @Override
     public boolean doesUsernameExist(String username) {
-        return userRepository.existsByUsername(username);
+        return userRepository.existsByCredentialsUsername(username);
     }
 
     @Override

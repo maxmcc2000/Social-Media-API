@@ -11,9 +11,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByCredentials(Credentials credentials);
 
-    User findByUsername(String username);
+    User findByCredentialsUsername(String username);
 
-    boolean existsByUsername(String username);
+    boolean existsByCredentialsUsername(String username);
 
     boolean existsByCredentials(Credentials credentials);
 
