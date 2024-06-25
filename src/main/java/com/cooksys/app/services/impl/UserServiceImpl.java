@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
         } User user = userRepository.findByCredentials(credentialsMapper.DtoToEntity(credentialsDto));
 
-        if (user.getFollowing().stream().findFirst().filter(e -> e.getUsername().equals(username)).isPresent()) {
+        if (user.getFollowing().stream().findFirst().filter(e -> e.getCredentials().getUsername().equals(username)).isPresent()) {
 
             throw new BadRequestException("User is already followed.");
 
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
         } User user = userRepository.findByCredentials(credentialsMapper.DtoToEntity(credentialsDto));
 
-        if (user.getFollowing().stream().findFirst().filter(e -> e.getUsername().equals(username)).isEmpty()) {
+        if (user.getFollowing().stream().findFirst().filter(e -> e.getCredentials().getUsername().equals(username)).isEmpty()) {
 
             throw new BadRequestException("User is not followed.");
 

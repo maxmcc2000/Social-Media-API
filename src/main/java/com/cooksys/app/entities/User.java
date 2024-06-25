@@ -21,9 +21,9 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    // After deleting username, it causes an error in followUser and unfollowUser methods in UserServiceImpl
-//    @Column(name = "username", nullable = false, insertable = false, updatable = false)
-//    private String username;
+     //After deleting username, it causes an error in followUser and unfollowUser methods in UserServiceImpl
+    @Column(name = "username", nullable = false, insertable = false, updatable = false)
+    private String username;
 
     @CreationTimestamp
     @Column
@@ -42,6 +42,14 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
     private List<User> following;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_mentions",
+            joinColumns = @JoinColumn(name = "tweet_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<Tweet> mentions;
 
     @Column(nullable = false)
     boolean deleted;
