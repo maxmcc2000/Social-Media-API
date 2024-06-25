@@ -1,6 +1,5 @@
 package com.cooksys.app.entities;
 
-import com.cooksys.app.entities.Credentials;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,5 +41,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
     private List<User> following;
+
+    @Column(nullable = false)
+    boolean deleted;
 
 }
