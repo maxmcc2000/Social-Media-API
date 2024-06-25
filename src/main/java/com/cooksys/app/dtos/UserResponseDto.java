@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Data
 public class UserResponseDto {
 
-    private String username;
+    //private CredentialsResponseDto credentialsResponseDto;
 
     private Timestamp joined;
 

@@ -38,11 +38,11 @@ public class UserServiceImpl implements UserService {
 
             throw new BadRequestException("User is already followed.");
 
-        } if (!userRepository.existsByUsername(username)) {
+        } if (!userRepository.existsByCredentialsUsername(username)) {
 
             throw new NotFoundException("User not found.");
 
-        } user.getFollowing().add(userRepository.findByUsername(username));
+        } user.getFollowing().add(userRepository.findByCredentialsUsername(username));
         userRepository.saveAndFlush(user);
 
     }
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getFollowers(String username) {
 
-        return userRepository.findByUsername(username).getFollowing().stream().filter(e -> !e.isDeleted()).collect(Collectors.toList());
+        return userRepository.findByCredentialsUsername(username).getFollowing().stream().filter(e -> !e.isDeleted()).collect(Collectors.toList());
 
     }
 
@@ -67,11 +67,11 @@ public class UserServiceImpl implements UserService {
 
             throw new BadRequestException("User is not followed.");
 
-        } if (!userRepository.existsByUsername(username)) {
+        } if (!userRepository.existsByCredentialsUsername(username)) {
 
             throw new NotFoundException("User not found.");
 
-        } user.getFollowing().remove(userRepository.findByUsername(username));
+        } user.getFollowing().remove(userRepository.findByCredentialsUsername(username));
         userRepository.saveAndFlush(user);
 
     }

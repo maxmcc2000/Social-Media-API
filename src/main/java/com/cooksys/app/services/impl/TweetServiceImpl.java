@@ -35,7 +35,7 @@ public class TweetServiceImpl implements TweetService{
     @Override
     public TweetResponseDto createTweet(TweetRequestDto tweetRequestDto) {
 
-        if (!userRepository.existsByUsername(tweetRequestDto.getCredentials().getUsername())) {
+        if (!userRepository.existsByCredentialsUsername(tweetRequestDto.getCredentials().getUsername())) {
 
             throw new NotAuthorizedException("Invalid username or password");
 
@@ -46,13 +46,13 @@ public class TweetServiceImpl implements TweetService{
 
             throw new BadRequestException("Tweet must contain content.");
 
-        } tweet.setAuthor(userRepository.findByUsername(tweetRequestDto.getCredentials().getUsername()));
+        } tweet.setAuthor(userRepository.findByCredentialsUsername(tweetRequestDto.getCredentials().getUsername()));
 
         //creates a pattern of "@followed by text" and find each instance in our content, add user to tweet's mentionedUsers
         Matcher matcher = Pattern.compile("@\\w+").matcher(tweet.getContent());
         while (matcher.find()) {
-            if (userRepository.existsByUsername(matcher.group().replace("@", ""))) {
-                tweet.getMentionedUsers().add(userRepository.findByUsername(matcher.group().replace("@", "")));
+            if (userRepository.existsByCredentialsUsername(matcher.group().replace("@", ""))) {
+                tweet.getMentionedUsers().add(userRepository.findByCredentialsUsername(matcher.group().replace("@", "")));
             }
         }
 
