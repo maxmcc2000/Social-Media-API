@@ -1,4 +1,4 @@
-package com.cooksys.app.servies;
+package com.cooksys.app.services;
 
 import com.cooksys.app.dtos.CredentialsDto;
 

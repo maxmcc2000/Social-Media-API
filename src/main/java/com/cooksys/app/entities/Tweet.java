@@ -1,5 +1,4 @@
 package com.cooksys.app.entities;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +22,12 @@ public class Tweet {
 
     @Column(nullable = false)
     private Timestamp posted;
-
+    
     private String content;
+    
+    @ManyToOne
     private Tweet inReplyTo;
+    @ManyToOne
     private Tweet repostOf;
     
     @ManyToMany

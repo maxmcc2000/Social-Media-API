@@ -1,4 +1,5 @@
-package com.cooksys.app.servies;
+package com.cooksys.app.services;
+
 
 public interface ValidateService {
 }
