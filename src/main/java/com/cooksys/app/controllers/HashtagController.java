@@ -1,4 +1,4 @@
-package com.cooksys.app.controllers.advice;
+package com.cooksys.app.controllers;
 
 import java.util.List;
 

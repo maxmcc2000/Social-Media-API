@@ -8,4 +8,6 @@ import com.cooksys.app.entities.Hashtag;
 @Repository
 public interface HashtagRepository extends JpaRepository<Hashtag, Long>{
 	Hashtag findByLabel(String label);
+
+	boolean existsByLabel(String label);
 }
