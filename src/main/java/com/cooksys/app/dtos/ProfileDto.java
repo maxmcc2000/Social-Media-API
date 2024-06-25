@@ -12,5 +12,5 @@ public class ProfileDto {
 
     private String email;
 
-    private String phoneNumber;
+    private String phone;
 }

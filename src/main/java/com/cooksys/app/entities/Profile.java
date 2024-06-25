@@ -5,10 +5,11 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.lang.annotation.Annotation;
 
 @Embeddable
 @Data
-public class Profile {
+public class Profile implements org.springframework.context.annotation.Profile {
 
     private String firstName;
 
@@ -18,6 +19,15 @@ public class Profile {
     @Email
     private String email;
 
-    private String phoneNumber;
+    private String phone;
 
+    @Override
+    public String[] value() {
+        return new String[0];
+    }
+
+    @Override
+    public Class<? extends Annotation> annotationType() {
+        return null;
+    }
 }
