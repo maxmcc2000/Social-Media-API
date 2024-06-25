@@ -30,29 +30,24 @@ public class Hashtag {
     @ManyToMany(mappedBy = "hashtags") //We use this field to allow mapping between hashtags and tweets in a many to many relationship
     private List<Tweet> tweets = new ArrayList<>();
     
-    
-    
-    //run the PrePersist methods here
     @PrePersist
-    protected void prepersistMethods() {
-    	onCreate();
-    	formatLabel();
-    }
-    
-   // @PrePersist
-    protected void onCreate() {
+    protected void onCreate() { //When first uploading to the DB, we make sure to
+    	//Set the timestamps, and format the label to be case insensitive.
     	firstUsed = LocalDateTime.now();
     	lastUsed = firstUsed;
+    	if (label != null) {
+            label = label.toLowerCase();
+        }
     }
     
-    @PostLoad
-    protected void onLoad() {
-    	lastUsed = LocalDateTime.now();
-    }
+//    @PostLoad //lastUsed actually needs to be updated every time a new tweet is tagged with the hashtag
+    			//This means our service should update lastUsed, instead of here
+//    protected void onLoad() {
+//    	lastUsed = LocalDateTime.now();
+//    }
     
-    //@PrePersist
     @PreUpdate
-    private void formatLabel() { //Making our labels case insensitive
+    private void formatLabel() { //Making our labels case insensitive when updating hashtags
         if (label != null) {
             label = label.toLowerCase();
         }
