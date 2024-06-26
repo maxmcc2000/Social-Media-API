@@ -42,10 +42,28 @@ public class UserServiceImpl implements UserService {
     		throw new NotFoundException("User not found");
 
     	return u;
-    	
-    	
-
     }
+    
+    public User setUser(UserRequestDto u, String username) {
+    	    	
+    	if(u == null || username == null)
+    		throw new NotFoundException("Null user lookup");
+    	
+    	User userFound = userRepository.findByCredentialsUsername(username);
+    	
+    	if (userFound == null)
+    		throw new NotFoundException("User not found");
+    	
+    	if (!userFound.getCredentials().equals(credentialsMapper.DtoToEntity(u.getCredentialsDto())))
+    		throw new NotAuthorizedException("Invalid password");
+    	else {
+    		
+    		userFound.setProfile(profileMapper.DtoToEntity(u.getProfileDto()));
+    		userRepository.save(userFound);
+    		return userFound;     		
+    	}
+    }
+
 
     @Override
     public void followUser(CredentialsDto credentialsDto, String username) {

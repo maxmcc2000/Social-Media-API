@@ -12,6 +12,8 @@ public interface UserService {
 	
 	User getUser(String username);
 	
+	User setUser(UserRequestDto u, String username);
+	
     void followUser(CredentialsDto credentials, String username);
 
     List<User> getFollowers(String username);
