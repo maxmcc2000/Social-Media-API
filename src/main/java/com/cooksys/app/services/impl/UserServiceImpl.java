@@ -22,7 +22,9 @@ import org.springframework.stereotype.Service;
 import com.cooksys.app.exceptions.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Service
@@ -204,6 +206,39 @@ public class UserServiceImpl implements UserService {
             }
         }
         return tweetMapper.entitiesToResponseDtos(nonDeletedTweets);
+    }
+    
+    @Override
+    public List<TweetResponseDto> getFeed(String username){
+    	User user = userRepository.findByCredentialsUsername(username);
+    	
+    	if(user == null || user.isDeleted()) {
+            throw new NotFoundException("User not found.");
+    	}
+    	
+    	List<Tweet> feed = new ArrayList<>();
+
+    	for(Tweet t : user.getTweets()) {
+
+    		if(!t.isDeleted())
+    			feed.add(t);
+    	}
+
+
+    	for(User u : user.getFollowing()) {
+    		if(!u.isDeleted()) {
+    			for(Tweet t : u.getTweets()) {
+    				feed.add(t);
+    				if(!t.isDeleted())
+    					feed.add(t);
+    			}
+    		}
+    	}
+    	
+    	Collections.sort(feed, Comparator.comparing(Tweet::getPosted).reversed());
+    	
+    	return tweetMapper.entitiesToResponseDtos(feed); 
+    	
     }
 
 }
