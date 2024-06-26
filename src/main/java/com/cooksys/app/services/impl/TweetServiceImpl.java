@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,7 +69,7 @@ public class TweetServiceImpl implements TweetService{
             String match = matcher.group().replace("#", "");
             Hashtag hashtag;
             if (hashtagRepository.existsByLabel(match)) {
-                hashtag = hashtagRepository.findByLabel(match);
+                hashtag = hashtagRepository.findByLabel(match).get();
                 hashtag.setLastUsed(Timestamp.valueOf(LocalDateTime.now()));
             } else {
                 hashtag = hashtagService.createHashtag(match);

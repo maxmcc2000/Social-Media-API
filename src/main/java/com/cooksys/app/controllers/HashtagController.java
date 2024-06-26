@@ -2,9 +2,7 @@ package com.cooksys.app.controllers;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.cooksys.app.dtos.HashtagResponseDto;
 import com.cooksys.app.dtos.TweetResponseDto;
@@ -26,7 +24,8 @@ public class HashtagController {
 	}
 	
 	@GetMapping("{label}")
-	public List<TweetResponseDto> getHashtagsByLabel() {
-		return null;
+	public List<TweetResponseDto> getHashtagsByLabel(@PathVariable String label) {
+		return hashtagService.getHashtagsByLabel(label);
 	}
+
 }
