@@ -20,9 +20,12 @@ import lombok.RequiredArgsConstructor;
 import com.cooksys.app.services.UserService;
 import org.springframework.stereotype.Service;
 import com.cooksys.app.exceptions.*;
+import com.cooksys.app.repositories.TweetRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +36,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final CredentialsMapper credentialsMapper;
     private final ProfileMapper profileMapper;
+    private final TweetRepository tweetRepository;
     private final TweetMapper tweetMapper;
     
     
@@ -55,7 +59,7 @@ public class UserServiceImpl implements UserService {
     	
     	User userFound = userRepository.findByCredentialsUsername(username);
     	
-    	if (userFound == null)
+    	if (userFound == null || userFound.isDeleted())
     		throw new NotFoundException("User not found");
     	
     	if (!userFound.getCredentials().equals(credentialsMapper.DtoToEntity(u.getCredentialsDto())))
@@ -79,6 +83,8 @@ public class UserServiceImpl implements UserService {
 
     	if(u == null)
     		throw new NotAuthorizedException("Unauthorized username or password");
+    	if(u.isDeleted())
+    		throw new BadRequestException("User already deleted");
     	
     	
     	//deletes user
@@ -203,5 +209,58 @@ public class UserServiceImpl implements UserService {
         }
         return tweetMapper.entitiesToResponseDtos(nonDeletedTweets);
     }
+    
+    @Override
+    public List<TweetResponseDto> getFeed(String username){
+    	User user = userRepository.findByCredentialsUsername(username);
+    	
+    	if(user == null || user.isDeleted()) {
+            throw new NotFoundException("User not found.");
+    	}
+    	
+    	List<Tweet> feed = new ArrayList<>();
+
+    	for(Tweet t : user.getTweets()) {
+    		if(!t.isDeleted())
+    			feed.add(t);
+    	}
+    	for(User u : user.getFollowing()) {
+    		if(!u.isDeleted()) {
+    			for(Tweet t : u.getTweets()) {
+    				feed.add(t);
+    				if(!t.isDeleted())
+    					feed.add(t);
+    			}
+    		}
+    	}
+    	Collections.sort(feed, Comparator.comparing(Tweet::getPosted).reversed());
+    	return tweetMapper.entitiesToResponseDtos(feed); 
+    	
+    	
+    }
+    
+    
+    public List<TweetResponseDto> getMen(String username){
+    	User user = userRepository.findByCredentialsUsername(username);
+    	
+    	if(user == null || user.isDeleted()) {
+            throw new NotFoundException("User not found.");
+    	}
+    	
+    	List<Tweet> mentions = new ArrayList<>();    	
+    	Iterable<Tweet> tweets = tweetRepository.findAll();
+    	
+    	
+    	for(Tweet t : tweets) {
+    		if(!t.isDeleted()) {
+    			if(t.getMentionedUsers().contains(user)) 
+    				mentions.add(t);
+    		}
+    	}
+    	
+    	Collections.sort(mentions, Comparator.comparing(Tweet::getPosted).reversed());
+    	return tweetMapper.entitiesToResponseDtos(mentions);    
+    }
+
 
 }

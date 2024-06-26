@@ -69,7 +69,7 @@ public class TweetServiceImpl implements TweetService{
             String match = matcher.group().replace("#", "");
             Hashtag hashtag;
             if (hashtagRepository.existsByLabel(match)) {
-                hashtag = hashtagRepository.findByLabel(match);
+                hashtag = hashtagRepository.findByLabel(match).get();
                 hashtag.setLastUsed(Timestamp.valueOf(LocalDateTime.now()));
             } else {
                 hashtag = hashtagService.createHashtag(match);

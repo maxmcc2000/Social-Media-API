@@ -5,9 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import com.cooksys.app.entities.Hashtag;
 
+import java.util.Optional;
+
 @Repository
 public interface HashtagRepository extends JpaRepository<Hashtag, Long>{
-	Hashtag findByLabel(String label);
+	Optional<Hashtag> findByLabel(String label);
 
 	boolean existsByLabel(String label);
 }
