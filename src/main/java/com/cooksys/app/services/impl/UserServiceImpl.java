@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     	
     	User userFound = userRepository.findByCredentialsUsername(username);
     	
-    	if (userFound == null)
+    	if (userFound == null || userFound.isDeleted())
     		throw new NotFoundException("User not found");
     	
     	if (!userFound.getCredentials().equals(credentialsMapper.DtoToEntity(u.getCredentialsDto())))
@@ -79,6 +79,8 @@ public class UserServiceImpl implements UserService {
 
     	if(u == null)
     		throw new NotAuthorizedException("Unauthorized username or password");
+    	if(u.isDeleted())
+    		throw new BadRequestException("User already deleted");
     	
     	
     	//deletes user
