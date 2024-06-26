@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.cooksys.app.services.TweetService;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tweets")
@@ -16,7 +18,11 @@ public class TweetController {
 
     @PostMapping
     public TweetResponseDto createTweet(@RequestBody TweetRequestDto tweetRequestDto) {
-        System.out.println("made it");
         return tweetService.createTweet(tweetRequestDto);
+    }
+
+    @GetMapping
+    public List<TweetResponseDto> retrieveAllTweets() {
+        return tweetService.retrieveAllTweets();
     }
 }

@@ -24,16 +24,16 @@ public class Seeder implements CommandLineRunner {
     	// ----- HASHTAGS -----
 
         Hashtag hashtag1 = new Hashtag();
-        hashtag1.setLabel("#eldenlord");
+        hashtag1.setLabel("eldenlord");
 
         Hashtag hashtag2 = new Hashtag();
-        hashtag2.setLabel("#mario");
+        hashtag2.setLabel("mario");
 
         Hashtag hashtag3 = new Hashtag();
-        hashtag3.setLabel("#luigi");
+        hashtag3.setLabel("luigi");
 
         Hashtag hashtag4 = new Hashtag();
-        hashtag4.setLabel("#whereiscortana");
+        hashtag4.setLabel("whereiscortana");
 
         hashtagRepository.saveAllAndFlush(Arrays.asList(hashtag1, hashtag2, hashtag3, hashtag4));
 
