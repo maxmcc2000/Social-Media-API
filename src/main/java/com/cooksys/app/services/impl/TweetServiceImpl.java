@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,6 +87,18 @@ public class TweetServiceImpl implements TweetService{
         //Sort in reverse-chronological order
         tweetResponseDtos.sort((o1, o2) -> o2.getPosted().compareTo(o1.getPosted()));
         return tweetResponseDtos;
+
+    }
+
+    @Override
+    public TweetResponseDto retrieveTweetById(Long id) {
+        Optional<Tweet> tweet = tweetRepository.findById(id);
+
+        if (tweet.isEmpty()) {
+
+            throw new BadRequestException("Tweet does not exist yet.");
+
+        } return tweetMapper.entityTodto(tweet.get());
 
     }
 

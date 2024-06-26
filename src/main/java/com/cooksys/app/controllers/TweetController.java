@@ -25,4 +25,9 @@ public class TweetController {
     public List<TweetResponseDto> retrieveAllTweets() {
         return tweetService.retrieveAllTweets();
     }
+
+    @GetMapping("/{id}")
+    public TweetResponseDto retrieveTweetById(@PathVariable Long id) {
+        return tweetService.retrieveTweetById(id);
+    }
 }
