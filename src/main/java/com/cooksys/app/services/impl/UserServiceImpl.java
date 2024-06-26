@@ -1,6 +1,7 @@
 package com.cooksys.app.services.impl;
 
 import com.cooksys.app.dtos.CredentialsDto;
+import com.cooksys.app.dtos.TweetResponseDto;
 import com.cooksys.app.dtos.UserRequestDto;
 import com.cooksys.app.dtos.UserResponseDto;
 import com.cooksys.app.entities.Credentials;
@@ -12,6 +13,7 @@ import com.cooksys.app.exceptions.NotAuthorizedException;
 import com.cooksys.app.exceptions.NotFoundException;
 import com.cooksys.app.mapper.CredentialsMapper;
 import com.cooksys.app.mapper.ProfileMapper;
+import com.cooksys.app.mapper.TweetMapper;
 import com.cooksys.app.mapper.UserMapper;
 import com.cooksys.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final CredentialsMapper credentialsMapper;
     private final ProfileMapper profileMapper;
+    private final TweetMapper tweetMapper;
     
     
     
@@ -187,6 +190,18 @@ public class UserServiceImpl implements UserService {
             newUser.setDeleted(false);
             return userMapper.entityToDto(userRepository.saveAndFlush(newUser));
         }
+    }
+
+    @Override
+    public List<TweetResponseDto> getUserTweets(String username) {
+        User user = userRepository.findByCredentialsUsername(username);
+        List<Tweet> nonDeletedTweets = new ArrayList<>();
+        for (Tweet tweet : user.getTweets()) {
+            if (!tweet.isDeleted()) {
+                nonDeletedTweets.add(tweet);
+            }
+        }
+        return tweetMapper.entitiesToDtos(nonDeletedTweets);
     }
 
 }
