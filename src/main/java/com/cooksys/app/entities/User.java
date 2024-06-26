@@ -5,8 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Value;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -20,10 +21,6 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
-
-     //After deleting username, it causes an error in followUser and unfollowUser methods in UserServiceImpl
-    @Column(name = "username", nullable = false, insertable = false, updatable = false)
-    private String username;
 
     @CreationTimestamp
     @Column
@@ -50,6 +47,25 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<Tweet> mentions;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_likes",
+            joinColumns = @JoinColumn(name = "tweet_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<Tweet> likes;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tweet> tweets;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_followers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
+    private List<User> followers;
 
     @Column(nullable = false)
     boolean deleted;
