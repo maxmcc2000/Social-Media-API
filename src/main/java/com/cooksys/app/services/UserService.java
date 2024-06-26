@@ -9,6 +9,13 @@ import java.util.List;
 
 public interface UserService {
 
+	
+	User getUser(String username);
+	
+	User setUser(UserRequestDto u, String username);
+	
+	User softDelete(CredentialsDto c);
+	
     void followUser(CredentialsDto credentials, String username);
 
     List<User> getFollowers(String username);

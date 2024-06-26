@@ -30,6 +30,9 @@ public class Tweet {
     @ManyToOne
     private Tweet repostOf;
     
+    @Column(nullable = false)
+    private boolean deleted; 
+    
     @ManyToMany
     @JoinTable(
             name = "tweet_hashtags",

@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+	
     User findByCredentials(Credentials credentials);
 
     User findByCredentialsUsername(String username);

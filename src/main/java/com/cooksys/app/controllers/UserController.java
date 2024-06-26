@@ -16,11 +16,23 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-
+    
+    @GetMapping("/@{username}")
+    public User getUsername(@PathVariable String username) {
+    	return userService.getUser(username);
+    }
+    
+    @PatchMapping("@{username}")
+    public User setUsername(@RequestBody UserRequestDto u, @PathVariable String username) {
+    	return userService.setUser(u, username);
+    }
+    
     @PostMapping("/@{username}/follow")
     public void followUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
         userService.followUser(credentialsDto, username);
     }
+    
+
 
     @GetMapping("/@{username}/following")
     public List<User> getFollowers(@PathVariable String username) {
@@ -40,5 +52,11 @@ public class UserController {
     public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
         return userService.createUser(userRequestDto);
     }
+    
+    @DeleteMapping("/@{username}")
+    public User softDelete(@PathVariable CredentialsDto c) {
+    	return userService.softDelete(c);
+    }
+    
 
 }
