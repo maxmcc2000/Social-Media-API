@@ -16,6 +16,7 @@ import com.cooksys.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import com.cooksys.app.services.UserService;
 import org.springframework.stereotype.Service;
+import com.cooksys.app.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,22 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final CredentialsMapper credentialsMapper;
     private final ProfileMapper profileMapper;
+    
+    
+    
+    @Override
+    public User getUser(String username) {
+    	
+    	User u = userRepository.findByCredentialsUsername(username);
+    	
+    	if(u == null)
+    		throw new NotFoundException("User not found");
+
+    	return u;
+    	
+    	
+
+    }
 
     @Override
     public void followUser(CredentialsDto credentialsDto, String username) {

@@ -16,11 +16,18 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-
+    
+    @GetMapping("/@{username}")
+    public User getUsername(@PathVariable String username) {
+    	return userService.getUser(username);
+    }
+    
     @PostMapping("/@{username}/follow")
     public void followUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
         userService.followUser(credentialsDto, username);
     }
+    
+
 
     @GetMapping("/@{username}/following")
     public List<User> getFollowers(@PathVariable String username) {

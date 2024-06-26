@@ -9,6 +9,9 @@ import java.util.List;
 
 public interface UserService {
 
+	
+	User getUser(String username);
+	
     void followUser(CredentialsDto credentials, String username);
 
     List<User> getFollowers(String username);
