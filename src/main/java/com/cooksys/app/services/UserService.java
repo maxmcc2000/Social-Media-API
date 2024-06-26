@@ -1,8 +1,10 @@
 package com.cooksys.app.services;
 
 import com.cooksys.app.dtos.CredentialsDto;
+import com.cooksys.app.dtos.TweetResponseDto;
 import com.cooksys.app.dtos.UserRequestDto;
 import com.cooksys.app.dtos.UserResponseDto;
+import com.cooksys.app.entities.Tweet;
 import com.cooksys.app.entities.User;
 
 import java.util.List;
@@ -25,4 +27,6 @@ public interface UserService {
     List<UserResponseDto> getAllUsers();
 
     UserResponseDto createUser(UserRequestDto userRequestDto);
+
+    List<TweetResponseDto> getUserTweets(String username);
 }

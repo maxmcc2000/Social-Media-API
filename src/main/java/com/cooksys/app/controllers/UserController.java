@@ -1,8 +1,10 @@
 package com.cooksys.app.controllers;
 
 import com.cooksys.app.dtos.CredentialsDto;
+import com.cooksys.app.dtos.TweetResponseDto;
 import com.cooksys.app.dtos.UserRequestDto;
 import com.cooksys.app.dtos.UserResponseDto;
+import com.cooksys.app.entities.Tweet;
 import com.cooksys.app.entities.User;
 import com.cooksys.app.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +58,11 @@ public class UserController {
     @DeleteMapping("/@{username}")
     public User softDelete(@PathVariable CredentialsDto c) {
     	return userService.softDelete(c);
+    }
+
+    @GetMapping("/@{username}/tweets")
+    public List<TweetResponseDto> getUserTweets(@PathVariable String username) {
+        return userService.getUserTweets(username);
     }
     
 
