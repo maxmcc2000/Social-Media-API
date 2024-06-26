@@ -15,7 +15,7 @@ public interface TweetMapper {
 
     Tweet requestDtoToEntity(TweetRequestDto tweetRequestDto);
 
-    List<TweetResponseDto> EntitiesToResponseDtos(List<Tweet> tweets);
+    List<TweetResponseDto> entitiesToResponseDtos(List<Tweet> tweets);
 
     //Tweet TweetToEntity(Tweet pDto);
     //removed "TweetToEntity". Tweet is an Entity so unneeded and uncompilable

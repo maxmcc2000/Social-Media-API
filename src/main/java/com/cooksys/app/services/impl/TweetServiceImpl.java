@@ -17,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,8 +56,8 @@ public class TweetServiceImpl implements TweetService{
         List<User> tempList = new ArrayList<>();
         while (matcher.find()) {
             String match = matcher.group().replace("@", "");
-            if (userRepository.existsByCredentialsIsUsername(match)) {
-                tempList.add(userRepository.findByUsername(match));
+            if (userRepository.existsByCredentialsUsername(match)) {
+                tempList.add(userRepository.findByCredentialsUsername(match));
             } tweet.setMentionedUsers(tempList);
         }
 
@@ -84,7 +82,7 @@ public class TweetServiceImpl implements TweetService{
     @Override
     public List<TweetResponseDto> retrieveAllTweets() {
 
-        List<TweetResponseDto> tweetResponseDtos = tweetMapper.EntitiesToResponseDtos(tweetRepository.findAll());
+        List<TweetResponseDto> tweetResponseDtos = tweetMapper.entitiesToResponseDtos(tweetRepository.findAll());
         //Sort in reverse-chronological order
         tweetResponseDtos.sort((o1, o2) -> o2.getPosted().compareTo(o1.getPosted()));
         return tweetResponseDtos;
