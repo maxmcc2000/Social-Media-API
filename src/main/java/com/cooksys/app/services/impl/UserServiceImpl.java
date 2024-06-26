@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import com.cooksys.app.services.UserService;
 import org.springframework.stereotype.Service;
 import com.cooksys.app.exceptions.*;
+import com.cooksys.app.repositories.TweetRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final CredentialsMapper credentialsMapper;
     private final ProfileMapper profileMapper;
+    private final TweetRepository tweetRepository;
     private final TweetMapper tweetMapper;
     
     
@@ -219,12 +221,9 @@ public class UserServiceImpl implements UserService {
     	List<Tweet> feed = new ArrayList<>();
 
     	for(Tweet t : user.getTweets()) {
-
     		if(!t.isDeleted())
     			feed.add(t);
     	}
-
-
     	for(User u : user.getFollowing()) {
     		if(!u.isDeleted()) {
     			for(Tweet t : u.getTweets()) {
@@ -234,11 +233,34 @@ public class UserServiceImpl implements UserService {
     			}
     		}
     	}
-    	
     	Collections.sort(feed, Comparator.comparing(Tweet::getPosted).reversed());
-    	
     	return tweetMapper.entitiesToResponseDtos(feed); 
     	
+    	
     }
+    
+    
+    public List<TweetResponseDto> getMen(String username){
+    	User user = userRepository.findByCredentialsUsername(username);
+    	
+    	if(user == null || user.isDeleted()) {
+            throw new NotFoundException("User not found.");
+    	}
+    	
+    	List<Tweet> mentions = new ArrayList<>();    	
+    	Iterable<Tweet> tweets = tweetRepository.findAll();
+    	
+    	
+    	for(Tweet t : tweets) {
+    		if(!t.isDeleted()) {
+    			if(t.getMentionedUsers().contains(user)) 
+    				mentions.add(t);
+    		}
+    	}
+    	
+    	Collections.sort(mentions, Comparator.comparing(Tweet::getPosted).reversed());
+    	return tweetMapper.entitiesToResponseDtos(mentions);    
+    }
+
 
 }

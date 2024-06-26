@@ -70,5 +70,11 @@ public class UserController {
     	return userService.getFeed(username);
     }
     
+    @GetMapping("/@{username}/mentions") 
+    public List<TweetResponseDto> getMen(@PathVariable String username){
+    	return userService.getMen(username);
+    }
+    
+    
 
 }
