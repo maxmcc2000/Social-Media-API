@@ -6,6 +6,7 @@ import com.cooksys.app.dtos.UserResponseDto;
 import com.cooksys.app.entities.Credentials;
 import com.cooksys.app.entities.Profile;
 import com.cooksys.app.entities.User;
+import com.cooksys.app.entities.Tweet;
 import com.cooksys.app.exceptions.BadRequestException;
 import com.cooksys.app.exceptions.NotAuthorizedException;
 import com.cooksys.app.exceptions.NotFoundException;
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
     public User setUser(UserRequestDto u, String username) {
     	    	
     	if(u == null || username == null)
-    		throw new NotFoundException("Null user lookup");
+    		throw new BadRequestException("Null user lookup");
     	
     	User userFound = userRepository.findByCredentialsUsername(username);
     	
@@ -63,6 +64,37 @@ public class UserServiceImpl implements UserService {
     		return userFound;     		
     	}
     }
+    
+    
+    public User softDelete(CredentialsDto c) {
+    	
+    	if(c == null) {
+    		throw new BadRequestException("Null credentials lookup");
+    	}
+    	
+    	User u = userRepository.findByCredentials(credentialsMapper.DtoToEntity(c));
+
+    	if(u == null)
+    		throw new NotAuthorizedException("Unauthorized username or password");
+    	
+    	
+    	//deletes user
+    	u.setDeleted(true);
+    	
+    	
+    	//deletes all tweets use is author of
+    	for(Tweet t : u.getTweets()) {
+    		t.setDeleted(true);
+    	}
+    	
+    	//should we also delete their mentions and likes too...? 
+    	//if so, we must iterate and search other tables
+    	
+    	return u;
+    	
+        }
+    
+    
 
 
     @Override

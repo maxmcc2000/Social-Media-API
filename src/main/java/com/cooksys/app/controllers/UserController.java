@@ -52,5 +52,11 @@ public class UserController {
     public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
         return userService.createUser(userRequestDto);
     }
+    
+    @DeleteMapping("/@{username}")
+    public User softDelete(@PathVariable CredentialsDto c) {
+    	return userService.softDelete(c);
+    }
+    
 
 }

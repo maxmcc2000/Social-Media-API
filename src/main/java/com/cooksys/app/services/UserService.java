@@ -14,6 +14,8 @@ public interface UserService {
 	
 	User setUser(UserRequestDto u, String username);
 	
+	User softDelete(CredentialsDto c);
+	
     void followUser(CredentialsDto credentials, String username);
 
     List<User> getFollowers(String username);
