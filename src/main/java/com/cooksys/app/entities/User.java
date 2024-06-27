@@ -43,16 +43,16 @@ public class User {
     @ManyToMany
     @JoinTable(
             name = "user_mentions",
-            joinColumns = @JoinColumn(name = "tweet_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "tweet_id")
     )
     private List<Tweet> mentions;
 
     @ManyToMany
     @JoinTable(
             name = "user_likes",
-            joinColumns = @JoinColumn(name = "tweet_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "tweet_id")
     )
     private List<Tweet> likes;
 

@@ -16,18 +16,21 @@ public interface TweetService {
     TweetResponseDto createTweet(TweetRequestDto tweetRequestDto);
 
     List<TweetResponseDto> retrieveAllTweets();
-    
+
+    void likeTweet(CredentialsDto credentialsDto, Long id);
+
     ContextDto getContext(long id);
-    
+
     List<TweetResponseDto> getReplies(@PathVariable Long id);
 
     TweetResponseDto retrieveTweetById(Long id);
 
     TweetResponseDto deleteTweetById(Long id, CredentialsDto credentialsDto);
-    
+
     List<TweetResponseDto> getReposts(@PathVariable Long id);
-    
+
     List<UserResponseDto> getMentions(@PathVariable Long id);
 
 
+    List<UserResponseDto> getLikedTweetUsers(Long id);
 }
