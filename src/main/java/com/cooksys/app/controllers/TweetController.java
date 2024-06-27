@@ -73,4 +73,9 @@ public class TweetController {
     public List<HashtagResponseDto> getTweetHashtags(@PathVariable("id") Long id) {
         return tweetService.getTweetHashtags(id);
     }
+
+    @PostMapping("/{id}/reply")
+    public TweetResponseDto replyToTweet(@PathVariable("id") Long id, @RequestBody TweetRequestDto tweetRequestDto) {
+        return tweetService.replyToTweet(id, tweetRequestDto);
+    }
 }
