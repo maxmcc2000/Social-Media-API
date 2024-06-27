@@ -1,14 +1,23 @@
 package com.cooksys.app.services.impl;
 
+import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.dtos.TweetRequestDto;
 import com.cooksys.app.dtos.TweetResponseDto;
+<<<<<<< HEAD
 import com.cooksys.app.dtos.ContextDto;
+=======
+import com.cooksys.app.entities.Credentials;
+>>>>>>> origin/master
 import com.cooksys.app.entities.Hashtag;
 import com.cooksys.app.entities.Tweet;
 import com.cooksys.app.entities.User;
 import com.cooksys.app.exceptions.BadRequestException;
 import com.cooksys.app.exceptions.NotAuthorizedException;
 import com.cooksys.app.exceptions.NotFoundException;
+<<<<<<< HEAD
+=======
+import com.cooksys.app.mapper.CredentialsMapper;
+>>>>>>> origin/master
 import com.cooksys.app.mapper.TweetMapper;
 import com.cooksys.app.repositories.HashtagRepository;
 import com.cooksys.app.repositories.TweetRepository;
@@ -40,6 +49,7 @@ public class TweetServiceImpl implements TweetService{
     private final UserRepository userRepository;
     private final HashtagRepository hashtagRepository;
     private final HashtagService hashtagService;
+    private final CredentialsMapper credentialsMapper;
 
     @Override
     public TweetResponseDto createTweet(TweetRequestDto tweetRequestDto) {
@@ -88,7 +98,7 @@ public class TweetServiceImpl implements TweetService{
     @Override
     public List<TweetResponseDto> retrieveAllTweets() {
 
-        List<TweetResponseDto> tweetResponseDtos = tweetMapper.entitiesToResponseDtos(tweetRepository.findAll());
+        List<TweetResponseDto> tweetResponseDtos = tweetMapper.entitiesToResponseDtos(tweetRepository.findByDeletedFalse());
         //Sort in reverse-chronological order
         tweetResponseDtos.sort((o1, o2) -> o2.getPosted().compareTo(o1.getPosted()));
         return tweetResponseDtos;
@@ -159,11 +169,37 @@ public class TweetServiceImpl implements TweetService{
     	
     	 	
     public TweetResponseDto retrieveTweetById(Long id) {
+
         Optional<Tweet> tweet = tweetRepository.findById(id);
         if (tweet.isEmpty()) {
-            throw new BadRequestException("Tweet does not exist yet.");
+            throw new NotFoundException("Tweet does not exist yet.");
+
+        } if (tweet.get().isDeleted()) {
+
+            throw new NotFoundException("Tweet does not exist yet.");
 
         } return tweetMapper.entityTodto(tweet.get());
+    }
+
+    @Override
+    public TweetResponseDto deleteTweetById(Long id, CredentialsDto credentialsDto) {
+
+        Optional<Tweet> tweet = tweetRepository.findById(id);
+        if (tweet.isEmpty()) {
+
+            throw new NotFoundException("Tweet does not exist yet.");
+
+        } Tweet tweetToDeleted = tweet.get();
+        Credentials credentials = tweetToDeleted.getAuthor().getCredentials();
+        Credentials credentials1 = credentialsMapper.DtoToEntity(credentialsDto);
+        //credential object not assigning HashCode() correctly, .equals not working. Used .getUsername.equals instead for the time being
+        if (!credentials.equals(credentials1)) {
+
+            throw new NotAuthorizedException("You cannot delete a Tweet that you didn't make.");
+
+        } tweetToDeleted.setDeleted(true);
+        return tweetMapper.entityTodto(tweetToDeleted);
+
     }
 }
 
