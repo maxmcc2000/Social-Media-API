@@ -28,7 +28,7 @@ public class TweetController {
         return tweetService.retrieveAllTweets();
     }
     
-    @GetMapping
+    @GetMapping("/{id}/context")
     public ContextDto getContext(@PathVariable long id){
     	return tweetService.getContext(id);
 	}

@@ -3,21 +3,15 @@ package com.cooksys.app.services.impl;
 import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.dtos.TweetRequestDto;
 import com.cooksys.app.dtos.TweetResponseDto;
-<<<<<<< HEAD
 import com.cooksys.app.dtos.ContextDto;
-=======
 import com.cooksys.app.entities.Credentials;
->>>>>>> origin/master
 import com.cooksys.app.entities.Hashtag;
 import com.cooksys.app.entities.Tweet;
 import com.cooksys.app.entities.User;
 import com.cooksys.app.exceptions.BadRequestException;
 import com.cooksys.app.exceptions.NotAuthorizedException;
 import com.cooksys.app.exceptions.NotFoundException;
-<<<<<<< HEAD
-=======
 import com.cooksys.app.mapper.CredentialsMapper;
->>>>>>> origin/master
 import com.cooksys.app.mapper.TweetMapper;
 import com.cooksys.app.repositories.HashtagRepository;
 import com.cooksys.app.repositories.TweetRepository;
@@ -106,22 +100,23 @@ public class TweetServiceImpl implements TweetService{
     }
     
     @Override 
-    public List<TweetResponseDto> getContext(long id){
+    public ContextDto getContext(long id){
     	
     	Optional<Tweet> optional = tweetRepository.findById(id);
     	
     	if(optional.isEmpty()) 
     		throw new NotFoundException("User not found.");
     
+    	ContextDto context = new ContextDto();
+
     	Tweet entity = optional.get();
     	context.setTarget(entity);
     	
-    	ContextDto context = new ContextDto();
     	
     	ArrayList<Tweet> before = new ArrayList<Tweet>();
     	ArrayList<Tweet> after = new ArrayList<Tweet>();
 
-    	Tweet prevTweet = entity.inReplyTo();
+    	Tweet prevTweet = entity.getInReplyTo();
     	
     	while(prevTweet != null) {
     		if(!prevTweet.isDeleted())
@@ -138,22 +133,19 @@ public class TweetServiceImpl implements TweetService{
     	}
     	
     	
-    	after.sort(after, Comparator.comparing(Tweet::getPosted));
+    	after.sort(Comparator.comparing(Tweet::getPosted));
     	context.setAfter(after);
 
     	return context;
     }
     
-    
-    	public Tweet replyHelper(ArrayList<Tweet> after, Tweet replyTweet){
+    	//assume two tweets can never reply to one another
+    	public void replyHelper(ArrayList<Tweet> after, Tweet replyTweet){
     		
     		if(replyTweet == null) {
-    			
     			if(!replyTweet.isDeleted()) {
     				after.add(replyTweet);
-    			}
-    			
-    			return replyTweet;
+    			}    			
     		}
     		
     		for(Tweet t : replyTweet.getReplies()) {
@@ -161,9 +153,9 @@ public class TweetServiceImpl implements TweetService{
     			if(!replyTweet.isDeleted()) {
     				after.add(replyTweet);
     			}
-    			
-    			return replyHelper(t);
-    		} 		
+    			 replyHelper(after, t);
+    		} 	
+    		
     	}
     	
     	
