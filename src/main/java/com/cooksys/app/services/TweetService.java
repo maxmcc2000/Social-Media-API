@@ -32,4 +32,5 @@ public interface TweetService {
     List<UserResponseDto> getMentions(@PathVariable Long id);
 
 
+    List<UserResponseDto> getLikedTweetUsers(Long id);
 }

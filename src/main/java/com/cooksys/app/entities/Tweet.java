@@ -2,6 +2,7 @@ package com.cooksys.app.entities;
 import jakarta.persistence.*;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class Tweet {
     @JoinColumn(name = "user_id")
     private User author;
 
+    @CreationTimestamp
     @Column(nullable = false)
     private Timestamp posted;
     

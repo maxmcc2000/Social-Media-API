@@ -1,26 +1,28 @@
-//package com.cooksys.app;
-//
-//import com.cooksys.app.entities.*;
-//import com.cooksys.app.repositories.HashtagRepository;
-//import com.cooksys.app.repositories.TweetRepository;
-//import com.cooksys.app.repositories.UserRepository;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.boot.CommandLineRunner;
-//import org.springframework.stereotype.Component;
-//
-//import java.util.Arrays;
-//import java.util.List;
-//
-//@Component
-//@RequiredArgsConstructor
-//public class Seeder implements CommandLineRunner {
-//
-//    private final HashtagRepository hashtagRepository;
-//    private final TweetRepository tweetRepository;
-//    private final UserRepository userRepository;
-//
-//    @Override
-//    public void run(String... args) throws Exception {
+package com.cooksys.app;
+
+import com.cooksys.app.entities.*;
+import com.cooksys.app.repositories.HashtagRepository;
+import com.cooksys.app.repositories.TweetRepository;
+import com.cooksys.app.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+public class Seeder implements CommandLineRunner {
+
+    private final HashtagRepository hashtagRepository;
+    private final TweetRepository tweetRepository;
+    private final UserRepository userRepository;
+
+    @Override
+    public void run(String... args) throws Exception {
+
 //    	// ----- HASHTAGS -----
 //
 //        Hashtag hashtag1 = new Hashtag();
@@ -41,20 +43,35 @@
 //        // --- User 1 ---
 //        // Credentials
 //
-//        Credentials user1Cred = new Credentials();
-//        user1Cred.setUsername("therealmc");
-//        user1Cred.setPassword("Password");
-//
-//        User user1 = new User();
-//        user1.setCredentials(user1Cred);
-//
-//        // Profile
-//        Profile user1Pro = new Profile();
-//        user1Pro.setFirstName("Master");
-//        user1Pro.setLastName("Chief");
-//        user1Pro.setEmail("sierra117@email.com");
-//        user1Pro.setPhone("123-456-7890");
-//        user1.setProfile(user1Pro);
+        Credentials user1Cred = new Credentials();
+        user1Cred.setUsername("therealmc");
+        user1Cred.setPassword("Password");
+
+        User user1 = new User();
+        user1.setCredentials(user1Cred);
+
+        // Profile
+        Profile user1Pro = new Profile();
+        user1Pro.setFirstName("Master");
+        user1Pro.setLastName("Chief");
+        user1Pro.setEmail("sierra117@email.com");
+        user1Pro.setPhone("123-456-7890");
+        user1.setProfile(user1Pro);
+        user1.setDeleted(false);
+        userRepository.saveAndFlush(user1);
+
+        Tweet tweet1 = new Tweet();
+        tweet1.setAuthor(user1);
+        tweet1.setDeleted(false);
+        tweet1.setContent("This is some content 1 tweet1 #eldenlord #mario");
+//        tweet1.setHashtags(Arrays.asList(hashtag1, hashtag2));
+//        tweet1.setMentionedUsers(Arrays.asList(user1, user2));
+        tweetRepository.saveAndFlush(tweet1);
+        List<Tweet> likes = new ArrayList<>();
+        likes.add(tweet1);
+        user1.setLikes(likes);
+        userRepository.saveAndFlush(user1);
+
 //
 //        // Deleted
 //        user1.setDeleted(false);
@@ -277,6 +294,6 @@
         user1.setFollowers(followers_1);
         userRepository.saveAndFlush(user1);
         */
-//    }
-//
-//}
+    }
+
+}
