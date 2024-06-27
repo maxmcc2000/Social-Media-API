@@ -20,13 +20,13 @@ public class UserController {
     private final UserService userService;
     
     @GetMapping("/@{username}")
-    public User getUsername(@PathVariable String username) {
+    public UserResponseDto getUser(@PathVariable String username) {
     	return userService.getUser(username);
     }
     
     @PatchMapping("/@{username}")
-    public UserResponseDto setUsername(@RequestBody UserRequestDto u, @PathVariable String username) {
-    	return userService.setUser(u, username);
+    public UserResponseDto setUser(@PathVariable String username, @RequestBody UserRequestDto u) {
+    	return userService.setUser(username, u);
     }
     
     @PostMapping("/@{username}/follow")
@@ -50,6 +50,7 @@ public class UserController {
     public List<UserResponseDto> getAllUsers(){
         return userService.getAllUsers();
     }
+    
     @PostMapping
     public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
         return userService.createUser(userRequestDto);

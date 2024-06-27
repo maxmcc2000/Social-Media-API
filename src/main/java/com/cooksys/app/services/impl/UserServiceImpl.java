@@ -43,17 +43,20 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public User getUser(String username) {
+    public UserResponseDto getUser(String username) {
     	
     	User u = userRepository.findByCredentialsUsername(username);
     	
     	if(u == null)
     		throw new NotFoundException("User not found");
 
-    	return u;
+    	UserResponseDto resp = userMapper.entityToDto(u);
+    	resp.setUsername(u.getCredentials().getUsername());
+
+    	return resp;
     }
     
-    public UserResponseDto setUser(UserRequestDto u, String username) {
+    public UserResponseDto setUser(String username, UserRequestDto u) {
     	    	
     	if(u == null || username == null || u.getProfileDto() == null)
     		throw new BadRequestException("Null user lookup");
@@ -169,24 +172,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getAllUsers() {
-        List<User> notDeleted = new ArrayList<>();
-        for (User user : userRepository.findAll()) {
+
+    	List<UserResponseDto> responseDtos  = new ArrayList<>();
+
+
+    	for (User user : userRepository.findAll()) {
             //System.out.println(user.getProfile());
-            if (!user.isDeleted()) notDeleted.add(user);
-        }
-        //System.out.println(notDeleted.get(0).toString());
-        List<UserResponseDto> userResponseDtos = userMapper.entitiesToDtos(notDeleted);
-        //UserResponseDto[] userDtos = new UserResponseDto[notDeleted.size()];
-        //String[] usernames = new String[userResponseDtos.size()];
-        int i = 0;
-        for (UserResponseDto userDto : userResponseDtos) {
-            userDto.setUsername(notDeleted.get(i).getCredentials().getUsername());
-            //userDtos[i] = userDto;
-//            usernames[i] = notDeleted.get(i).getCredentials().getUsername();
-            i++;
+            if (!user.isDeleted()) {
+            	UserResponseDto entityToAdd = userMapper.entityToDto(user);
+            	entityToAdd.setUsername(user.getCredentials().getUsername());
+            	responseDtos.add(entityToAdd);
+            }
         }
 
-        return userResponseDtos;
+        //System.out.println(notDeleted.get(0).toString());
+        return responseDtos;
     }
 
     @Override

@@ -10,13 +10,14 @@ import com.cooksys.app.entities.User;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface UserService {
 
 	
-	User getUser(String username);
+	UserResponseDto getUser(String username);
 	
-	UserResponseDto setUser(UserRequestDto u, String username);
+	UserResponseDto setUser(String username, UserRequestDto u);
 	
 	User softDelete(CredentialsDto c);
 	
