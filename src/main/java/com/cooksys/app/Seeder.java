@@ -1,65 +1,65 @@
-package com.cooksys.app;
-
-import com.cooksys.app.entities.*;
-import com.cooksys.app.repositories.HashtagRepository;
-import com.cooksys.app.repositories.TweetRepository;
-import com.cooksys.app.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
-
-@Component
-@RequiredArgsConstructor
-public class Seeder implements CommandLineRunner {
-
-    private final HashtagRepository hashtagRepository;
-    private final TweetRepository tweetRepository;
-    private final UserRepository userRepository;
-
-    @Override
-    public void run(String... args) throws Exception {
-    	// ----- HASHTAGS -----
-
-        Hashtag hashtag1 = new Hashtag();
-        hashtag1.setLabel("eldenlord");
-
-        Hashtag hashtag2 = new Hashtag();
-        hashtag2.setLabel("mario");
-
-        Hashtag hashtag3 = new Hashtag();
-        hashtag3.setLabel("luigi");
-
-        Hashtag hashtag4 = new Hashtag();
-        hashtag4.setLabel("whereiscortana");
-
-        hashtagRepository.saveAllAndFlush(Arrays.asList(hashtag1, hashtag2, hashtag3, hashtag4));
-
-
-        // --- User 1 ---
-        // Credentials
-
-        Credentials user1Cred = new Credentials();
-        user1Cred.setUsername("therealmc");
-        user1Cred.setPassword("Password");
-
-        User user1 = new User();
-        user1.setCredentials(user1Cred);
-
-        // Profile
-        Profile user1Pro = new Profile();
-        user1Pro.setFirstName("Master");
-        user1Pro.setLastName("Chief");
-        user1Pro.setEmail("sierra117@email.com");
-        user1Pro.setPhone("123-456-7890");
-        user1.setProfile(user1Pro);
-
-        // Deleted
-        user1.setDeleted(false);
-        userRepository.saveAndFlush(user1);
-
+//package com.cooksys.app;
+//
+//import com.cooksys.app.entities.*;
+//import com.cooksys.app.repositories.HashtagRepository;
+//import com.cooksys.app.repositories.TweetRepository;
+//import com.cooksys.app.repositories.UserRepository;
+//import lombok.RequiredArgsConstructor;
+//import org.springframework.boot.CommandLineRunner;
+//import org.springframework.stereotype.Component;
+//
+//import java.util.Arrays;
+//import java.util.List;
+//
+//@Component
+//@RequiredArgsConstructor
+//public class Seeder implements CommandLineRunner {
+//
+//    private final HashtagRepository hashtagRepository;
+//    private final TweetRepository tweetRepository;
+//    private final UserRepository userRepository;
+//
+//    @Override
+//    public void run(String... args) throws Exception {
+//    	// ----- HASHTAGS -----
+//
+//        Hashtag hashtag1 = new Hashtag();
+//        hashtag1.setLabel("eldenlord");
+//
+//        Hashtag hashtag2 = new Hashtag();
+//        hashtag2.setLabel("mario");
+//
+//        Hashtag hashtag3 = new Hashtag();
+//        hashtag3.setLabel("luigi");
+//
+//        Hashtag hashtag4 = new Hashtag();
+//        hashtag4.setLabel("whereiscortana");
+//
+//        hashtagRepository.saveAllAndFlush(Arrays.asList(hashtag1, hashtag2, hashtag3, hashtag4));
+//
+//
+//        // --- User 1 ---
+//        // Credentials
+//
+//        Credentials user1Cred = new Credentials();
+//        user1Cred.setUsername("therealmc");
+//        user1Cred.setPassword("Password");
+//
+//        User user1 = new User();
+//        user1.setCredentials(user1Cred);
+//
+//        // Profile
+//        Profile user1Pro = new Profile();
+//        user1Pro.setFirstName("Master");
+//        user1Pro.setLastName("Chief");
+//        user1Pro.setEmail("sierra117@email.com");
+//        user1Pro.setPhone("123-456-7890");
+//        user1.setProfile(user1Pro);
+//
+//        // Deleted
+//        user1.setDeleted(false);
+//        userRepository.saveAndFlush(user1);
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
         // --- User 2 ---
         // Credentials
@@ -277,6 +277,6 @@ public class Seeder implements CommandLineRunner {
         user1.setFollowers(followers_1);
         userRepository.saveAndFlush(user1);
         */
-    }
-
-}
+//    }
+//
+//}
