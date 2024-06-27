@@ -3,6 +3,7 @@ package com.cooksys.app.services.impl;
 import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.dtos.TweetRequestDto;
 import com.cooksys.app.dtos.TweetResponseDto;
+import com.cooksys.app.dtos.ContextDto;
 import com.cooksys.app.entities.Credentials;
 import com.cooksys.app.entities.Hashtag;
 import com.cooksys.app.entities.Tweet;
@@ -21,10 +22,13 @@ import lombok.RequiredArgsConstructor;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -94,14 +98,72 @@ public class TweetServiceImpl implements TweetService{
         return tweetResponseDtos;
 
     }
+    
+    @Override 
+    public ContextDto getContext(long id){
+    	
+    	Optional<Tweet> optional = tweetRepository.findById(id);
+    	
+    	if(optional.isEmpty()) 
+    		throw new NotFoundException("User not found.");
+    
+    	ContextDto context = new ContextDto();
 
-    @Override
+    	Tweet entity = optional.get();
+    	context.setTarget(entity);
+    	
+    	
+    	ArrayList<Tweet> before = new ArrayList<Tweet>();
+    	ArrayList<Tweet> after = new ArrayList<Tweet>();
+
+    	Tweet prevTweet = entity.getInReplyTo();
+    	
+    	while(prevTweet != null) {
+    		if(!prevTweet.isDeleted())
+    			before.add(prevTweet);
+    	}
+    	
+    	//puts  list in chronological order
+    	Collections.reverse(before);
+    	context.setBefore(before);
+    	
+    	
+    	for(Tweet t : entity.getReplies()) {
+    		replyHelper(after, t);
+    	}
+    	
+    	
+    	after.sort(Comparator.comparing(Tweet::getPosted));
+    	context.setAfter(after);
+
+    	return context;
+    }
+    
+    	//assume two tweets can never reply to one another
+    	public void replyHelper(ArrayList<Tweet> after, Tweet replyTweet){
+    		
+    		if(replyTweet == null) {
+    			if(!replyTweet.isDeleted()) {
+    				after.add(replyTweet);
+    			}    			
+    		}
+    		
+    		for(Tweet t : replyTweet.getReplies()) {
+    			
+    			if(!replyTweet.isDeleted()) {
+    				after.add(replyTweet);
+    			}
+    			 replyHelper(after, t);
+    		} 	
+    		
+    	}
+    	
+    	
+    	 	
     public TweetResponseDto retrieveTweetById(Long id) {
 
         Optional<Tweet> tweet = tweetRepository.findById(id);
-
         if (tweet.isEmpty()) {
-
             throw new NotFoundException("Tweet does not exist yet.");
 
         } if (tweet.get().isDeleted()) {
@@ -109,7 +171,6 @@ public class TweetServiceImpl implements TweetService{
             throw new NotFoundException("Tweet does not exist yet.");
 
         } return tweetMapper.entityTodto(tweet.get());
-
     }
 
     @Override
@@ -132,5 +193,6 @@ public class TweetServiceImpl implements TweetService{
         return tweetMapper.entityTodto(tweetToDeleted);
 
     }
-
 }
+
+

@@ -32,6 +32,9 @@ public class Tweet {
     @ManyToOne
     private Tweet repostOf;
     
+    @OneToMany
+    private List<Tweet> replies; 
+    
     @Column(nullable = false)
     private boolean deleted; 
     
