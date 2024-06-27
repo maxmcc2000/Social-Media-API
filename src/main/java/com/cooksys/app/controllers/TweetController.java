@@ -67,4 +67,9 @@ public class TweetController {
     public List<UserResponseDto> getLikedTweetUsers(@PathVariable("id") Long id) {
         return tweetService.getLikedTweetUsers(id);
     }
+
+    @PostMapping("/{id}/repost")
+    public TweetResponseDto createRepost(@PathVariable("id") Long id, @RequestBody CredentialsDto credentialsDto) {
+        return tweetService.createRepost(id, credentialsDto);
+    }
 }

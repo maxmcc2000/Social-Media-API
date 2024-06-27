@@ -50,6 +50,19 @@ public class TweetServiceImpl implements TweetService{
     private final HashtagRepository hashtagRepository;
     private final HashtagService hashtagService;
 
+    //Helper method to get a Tweet by id
+    private Tweet getTweet(Long id) {
+        Optional<Tweet> optionalTweet = tweetRepository.findById(id);
+        if (optionalTweet.isEmpty()) throw new NotFoundException("Tweet with id " + id + " not found.");
+        return optionalTweet.get();
+    }
+
+    private User getUser(Credentials credentials) {
+        Optional<User> optionalUser = userRepository.findByCredentials(credentials);
+        if (optionalUser.isEmpty()) throw new NotFoundException("User with credentials " + credentials + " not found.");
+        return optionalUser.get();
+    }
+
     @Override
     public TweetResponseDto createTweet(TweetRequestDto tweetRequestDto) {
 
@@ -103,22 +116,7 @@ public class TweetServiceImpl implements TweetService{
         return tweetResponseDtos;
 
     }
-    //    @Override
-//    public void likeTweet(CredentialsDto credentialsDto, Long id) {
-//        //find tweet with id
-//        //Tweet tweetToLike = tweetRepository.findById
-//        Optional<Tweet> optionalTweet = tweetRepository.findById(id);
-//        if (optionalTweet.isEmpty()) throw new NotFoundException("Tweet with id " + id + " not found.");
-//        Tweet tweetToLike = optionalTweet.get();
-//        if (tweetToLike.isDeleted()) throw new BadRequestException("Tweet with id " + id + " has been deleted");
-//        //find User with credentials
-//        Optional<User> optionalUser = userRepository.findByCredentials(credentialsMapper.DtoToEntity(credentialsDto));
-//        //Only modifying User entity: add Tweet to User.likes
-//        if (optionalUser.isEmpty()) throw new NotFoundException("User with credentials " + credentialsMapper.DtoToEntity(credentialsDto) + " not found.");
-//        User user = optionalUser.get();
-//        user.getLikes().add(tweetToLike);
-//        userRepository.saveAndFlush(user);
-//    }
+
     @Override
     public void likeTweet(CredentialsDto credentialsDto, Long id) {
         Optional<Tweet> optionalTweet = tweetRepository.findById(id);
@@ -215,12 +213,15 @@ public class TweetServiceImpl implements TweetService{
     @Override
     public TweetResponseDto deleteTweetById(Long id, CredentialsDto credentialsDto) {
 
-        Optional<Tweet> tweet = tweetRepository.findById(id);
-        if (tweet.isEmpty()) {
+//        Optional<Tweet> tweet = tweetRepository.findById(id);
+//        if (tweet.isEmpty()) {
+//
+//            throw new NotFoundException("Tweet does not exist yet.");
+//
+//        } Tweet tweetToDeleted = tweet.get();
 
-            throw new NotFoundException("Tweet does not exist yet.");
+        Tweet tweetToDeleted = getTweet(id);
 
-        } Tweet tweetToDeleted = tweet.get();
         Credentials credentials = tweetToDeleted.getAuthor().getCredentials();
         Credentials credentials1 = credentialsMapper.DtoToEntity(credentialsDto);
         //credential object not assigning HashCode() correctly, .equals not working. Used .getUsername.equals instead for the time being
@@ -269,14 +270,33 @@ public class TweetServiceImpl implements TweetService{
     @Override
     public List<UserResponseDto> getLikedTweetUsers(Long id) {
 
-        Optional<Tweet> optionalTweet = tweetRepository.findById(id);
-        if (optionalTweet.isEmpty()) throw new NotFoundException("Tweet with id " + id + " not found.");
-        Tweet tweet = optionalTweet.get();
+//        Optional<Tweet> optionalTweet = tweetRepository.findById(id);
+//        if (optionalTweet.isEmpty()) throw new NotFoundException("Tweet with id " + id + " not found.");
+        Tweet tweet = getTweet(id);
         if (tweet.isDeleted()) throw new NotFoundException("Tweet with id " + id + " has been deleted");
 
         //Query written in UserRepository that finds all Users which contain a tweet with this id
         // in their likes
         List<User> users = userRepository.findUsersByLikedTweet(id);
         return usermapper.entitiesToDtos(users);
+    }
+
+    @Override
+    public TweetResponseDto createRepost(Long id, CredentialsDto credentialsDto) {
+        //get original tweet
+        Tweet originalTweet = getTweet(id);
+        //create new tweet
+        Tweet newTweet = new Tweet();
+        // set repost of to original tweet
+        newTweet.setRepostOf(originalTweet);
+
+        User user = getUser(credentialsMapper.DtoToEntity(credentialsDto));
+        //Update User's tweets
+        user.getTweets().add(newTweet);
+        //set author of tweet to user
+        newTweet.setAuthor(user);
+        userRepository.saveAndFlush(user);
+
+        return tweetMapper.entityTodto(newTweet);
     }
 }
