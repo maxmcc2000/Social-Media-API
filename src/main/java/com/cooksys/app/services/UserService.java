@@ -4,13 +4,9 @@ import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.dtos.TweetResponseDto;
 import com.cooksys.app.dtos.UserRequestDto;
 import com.cooksys.app.dtos.UserResponseDto;
-import com.cooksys.app.entities.Tweet;
 import com.cooksys.app.entities.User;
 
 import java.util.List;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 public interface UserService {
 
@@ -23,7 +19,7 @@ public interface UserService {
 	
     void followUser(CredentialsDto credentials, String username);
 
-    List<User> getFollowers(String username);
+    List<UserResponseDto> getFollowers(String username);
 
     void unfollowUser(CredentialsDto credentialsDto, String username);
 
@@ -37,6 +33,6 @@ public interface UserService {
     
 	List<TweetResponseDto> getMen(String username);
 	
-    List<User> getFollowing(String username);
+    List<UserResponseDto> getFollowing(String username);
    
 }

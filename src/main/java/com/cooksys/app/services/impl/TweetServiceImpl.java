@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,7 +74,7 @@ public class TweetServiceImpl implements TweetService{
 
             throw new BadRequestException("Tweet must contain content.");
 
-        } tweet.setAuthor(userRepository.findByCredentialsUsername(tweetRequestDto.getCredentials().getUsername()));
+        } tweet.setAuthor(userRepository.findByCredentialsUsername(tweetRequestDto.getCredentials().getUsername()).get());
 
         //creates a pattern of "@followed by text" and find each instance in our content, add user to tweet's mentionedUsers
         Matcher matcher = Pattern.compile("@\\w+").matcher(tweet.getContent());
@@ -83,7 +82,7 @@ public class TweetServiceImpl implements TweetService{
         while (matcher.find()) {
             String match = matcher.group().replace("@", "");
             if (userRepository.existsByCredentialsUsername(match)) {
-                tempList.add(userRepository.findByCredentialsUsername(match));
+                tempList.add(userRepository.findByCredentialsUsername(match).get());
             } tweet.setMentionedUsers(tempList);
         }
 
