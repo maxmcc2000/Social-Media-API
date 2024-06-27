@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     	return u;
     }
     
-    public UserResponseDto setUser(UserRequestDto u, String username) {
+    public UserResponseDto setUser(String username, UserRequestDto u) {
     	    	
     	if(u == null || username == null || u.getProfileDto() == null)
     		throw new BadRequestException("Null user lookup");

@@ -25,8 +25,8 @@ public class UserController {
     }
     
     @PatchMapping("/@{username}")
-    public UserResponseDto setUsername(@RequestBody UserRequestDto u, @PathVariable String username) {
-    	return userService.setUser(u, username);
+    public UserResponseDto setUser(@PathVariable String username, @RequestBody UserRequestDto u) {
+    	return userService.setUser(username, u);
     }
     
     @PostMapping("/@{username}/follow")
