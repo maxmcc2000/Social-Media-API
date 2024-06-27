@@ -1,15 +1,16 @@
 package com.cooksys.app.entities;
 import jakarta.persistence.*;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 public class Tweet {
 
@@ -31,6 +32,9 @@ public class Tweet {
     @ManyToOne
     private Tweet repostOf;
     
+    @OneToMany
+    private List<Tweet> replies; 
+    
     @Column(nullable = false)
     private boolean deleted; 
     
@@ -44,5 +48,19 @@ public class Tweet {
 
     @ManyToMany(mappedBy = "mentions")
     private List<User> mentionedUsers;
+    
+    
+    
+    //helper method
+    public List<User> mentionNotDeleted(){
+    	ArrayList<User> notDeleted = new ArrayList<User>();
+    	
+    	for(User u : mentionedUsers) {
+    		if(!u.isDeleted())
+    			notDeleted.add(u);
+    	}
+    	
+    	return notDeleted;
+    }
 
 }

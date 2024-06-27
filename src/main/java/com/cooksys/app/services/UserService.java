@@ -9,6 +9,8 @@ import com.cooksys.app.entities.User;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.PathVariable;
+
 public interface UserService {
 
 	
@@ -33,5 +35,7 @@ public interface UserService {
     List<TweetResponseDto> getFeed(String username);
     
 	List<TweetResponseDto> getMen(String username);
-
+	
+    List<User> getFollowing(String username);
+   
 }
