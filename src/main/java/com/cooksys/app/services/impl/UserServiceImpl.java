@@ -170,32 +170,43 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
+
         User newUser = userMapper.DtoToEntity(userRequestDto);
         Credentials credentials = credentialsMapper.DtoToEntity(userRequestDto.getCredentialsDto());
         Profile profile = profileMapper.DtoToEntity(userRequestDto.getProfileDto());
         newUser.setCredentials(credentials);
         newUser.setProfile(profile);
-//        System.out.println(userRequestDto);
-//        System.out.println(newUser.toString());
+
         //if any required fields are missing
-        if (newUser.getCredentials() == null || newUser.getProfile() == null || profile.getEmail() == null) {
+        if (newUser.getCredentials() == null || newUser.getCredentials().getUsername() == null || newUser.getCredentials().getPassword() == null || newUser.getProfile() == null || profile.getEmail() == null) {
             throw new BadRequestException("One or more required fields are missing.");
         }
+
         //if this username is found in the database
         if (userRepository.findByCredentialsUsername(newUser.getCredentials().getUsername()) != null) {
+
             User existingUser = userRepository.findByCredentialsUsername(newUser.getCredentials().getUsername());
+
             //if the given credentials match a deleted user
             if (existingUser.isDeleted() && existingUser.getCredentials().equals(newUser.getCredentials())){
+
                 existingUser.setDeleted(false);
                 return userMapper.entityToDto(existingUser);
+
             } else {
                 //username already taken
                 throw new NotAuthorizedException("Username is already taken.");
             }
+
         } else {
+
             newUser.setDeleted(false);
-            return userMapper.entityToDto(userRepository.saveAndFlush(newUser));
+            UserResponseDto userResponseDto = userMapper.entityToDto(userRepository.saveAndFlush(newUser));
+            userResponseDto.setUsername(credentials.getUsername());
+            return userResponseDto;
+
         }
+
     }
 
     @Override
