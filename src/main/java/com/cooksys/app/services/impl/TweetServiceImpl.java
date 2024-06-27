@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.cooksys.app.services.TweetService;
 
@@ -193,6 +194,30 @@ public class TweetServiceImpl implements TweetService{
         return tweetMapper.entityTodto(tweetToDeleted);
 
     }
+    
+    @Override 
+    public List<TweetResponseDto> getReplies(@PathVariable Long id){
+        Optional<Tweet> tweet = tweetRepository.findById(id);
+        if (tweet.isEmpty() || tweet.get().isDeleted()) 
+            throw new NotFoundException("Tweet does not exist yet.");    
+        
+        return tweetMapper.entitiesToResponseDtos(tweet.get().getReplies());
+ 
+    }
+    
+    
+    @Override 
+    public List<TweetResponseDto> getReposts(@PathVariable Long id){
+    	
+        Optional<Tweet> tweet = tweetRepository.findById(id);
+        if (tweet.isEmpty() || tweet.get().isDeleted()) 
+            throw new NotFoundException("Tweet does not exist.");   
+    	
+        return tweetMapper.entitiesToResponseDtos(tweetRepository.findAllByRepostOf(tweet.get())); 
+
+    }
+
+
 }
 
 
