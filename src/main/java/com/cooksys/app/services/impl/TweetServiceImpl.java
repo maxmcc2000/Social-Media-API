@@ -2,11 +2,13 @@ package com.cooksys.app.services.impl;
 
 import com.cooksys.app.dtos.TweetRequestDto;
 import com.cooksys.app.dtos.TweetResponseDto;
+import com.cooksys.app.dtos.ContextDto;
 import com.cooksys.app.entities.Hashtag;
 import com.cooksys.app.entities.Tweet;
 import com.cooksys.app.entities.User;
 import com.cooksys.app.exceptions.BadRequestException;
 import com.cooksys.app.exceptions.NotAuthorizedException;
+import com.cooksys.app.exceptions.NotFoundException;
 import com.cooksys.app.mapper.TweetMapper;
 import com.cooksys.app.repositories.HashtagRepository;
 import com.cooksys.app.repositories.TweetRepository;
@@ -17,9 +19,12 @@ import lombok.RequiredArgsConstructor;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -88,5 +93,73 @@ public class TweetServiceImpl implements TweetService{
         return tweetResponseDtos;
 
     }
+    
+    @Override 
+    
+    	public List<TweetResponseDto> getContext(long id){
+    	
+    	Optional<Tweet> optional = tweetRepository.findById(id);
+    	
+    	if(optional.isEmpty()) 
+    		throw new NotFoundException("User not found.");
+    
+    	Tweet entity = optional.get();
+    	context.setTarget(entity);
+    	
+    	ContextDto context = new ContextDto();
+    	
+    	ArrayList<Tweet> before = new ArrayList<Tweet>();
+    	ArrayList<Tweet> after = new ArrayList<Tweet>();
 
+    	Tweet prevTweet = entity.inReplyTo();
+    	
+    	while(prevTweet != null) {
+    		if(!prevTweet.isDeleted())
+    			before.add(prevTweet);
+    	}
+    	
+    	//puts  list in chronological order
+    	Collections.reverse(before);
+    	context.setBefore(before);
+    	
+    	
+    	for(Tweet t : entity.getReplies()) {
+    		replyHelper(after, t);
+    	}
+    	
+    	
+    	after.sort(after, Comparator.comparing(Tweet::getPosted));
+    	context.setAfter(after);
+
+    	return context;
+    }
+    
+    
+    	public Tweet replyHelper(ArrayList<Tweet> after, Tweet replyTweet){
+    		
+    		if(replyTweet == null) {
+    			
+    			if(!replyTweet.isDeleted()) {
+    				after.add(replyTweet);
+    			}
+    			
+    			return replyTweet;
+    		}
+    		
+    		for(Tweet t : replyTweet.getReplies()) {
+    			
+    			if(!replyTweet.isDeleted()) {
+    				after.add(replyTweet);
+    			}
+    			
+    			return replyHelper(t);
+    		} 		
+    	}
+    	
+    	
+    	
+    	
+    	
 }
+
+

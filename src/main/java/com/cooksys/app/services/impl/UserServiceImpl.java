@@ -261,6 +261,19 @@ public class UserServiceImpl implements UserService {
     	Collections.sort(mentions, Comparator.comparing(Tweet::getPosted).reversed());
     	return tweetMapper.entitiesToResponseDtos(mentions);    
     }
+    
+    public List<User> getFollowers(String username){
+    	
+    	User user = userRepository.findByCredentialsUsername(username);
+    	
+    	if(user == null || user.isDeleted()) {
+            throw new NotFoundException("User not found.");
+    	}
+    	
+    	List<User> followers = user.getFollowers();
+    	
+    	return followers;
 
+    }
 
 }
