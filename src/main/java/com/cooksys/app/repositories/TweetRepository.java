@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
     List<Tweet> findByDeletedFalse();
+    List<Tweet> findAllByRepostOf(Tweet tweet); 
 
 }

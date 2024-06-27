@@ -204,6 +204,19 @@ public class TweetServiceImpl implements TweetService{
         return tweetMapper.entitiesToResponseDtos(tweet.get().getReplies());
  
     }
+    
+    
+    @Override 
+    public List<TweetResponseDto> getReposts(@PathVariable Long id){
+    	
+        Optional<Tweet> tweet = tweetRepository.findById(id);
+        if (tweet.isEmpty() || tweet.get().isDeleted()) 
+            throw new NotFoundException("Tweet does not exist.");   
+    	
+        return tweetMapper.entitiesToResponseDtos(tweetRepository.findAllByRepostOf(tweet.get())); 
+
+    }
+
 
 }
 

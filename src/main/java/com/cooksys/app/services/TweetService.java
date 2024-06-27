@@ -23,4 +23,7 @@ public interface TweetService {
     TweetResponseDto retrieveTweetById(Long id);
 
     TweetResponseDto deleteTweetById(Long id, CredentialsDto credentialsDto);
+    
+    List<TweetResponseDto> getReposts(@PathVariable Long id);
+
 }
