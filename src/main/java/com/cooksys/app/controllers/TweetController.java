@@ -1,5 +1,6 @@
 package com.cooksys.app.controllers;
 
+import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.dtos.TweetRequestDto;
 import com.cooksys.app.dtos.TweetResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,9 @@ public class TweetController {
     @GetMapping
     public List<TweetResponseDto> retrieveAllTweets() {
         return tweetService.retrieveAllTweets();
+    }
+    @PostMapping("/{id}/like")
+    public void likeTweet(@RequestBody CredentialsDto credentialsDto, @PathVariable Long id) {
+        tweetService.likeTweet(credentialsDto, id);
     }
 }

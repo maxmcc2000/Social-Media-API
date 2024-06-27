@@ -1,5 +1,6 @@
 package com.cooksys.app.services.impl;
 
+import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.dtos.TweetRequestDto;
 import com.cooksys.app.dtos.TweetResponseDto;
 import com.cooksys.app.entities.Hashtag;
@@ -7,6 +8,8 @@ import com.cooksys.app.entities.Tweet;
 import com.cooksys.app.entities.User;
 import com.cooksys.app.exceptions.BadRequestException;
 import com.cooksys.app.exceptions.NotAuthorizedException;
+import com.cooksys.app.exceptions.NotFoundException;
+import com.cooksys.app.mapper.CredentialsMapper;
 import com.cooksys.app.mapper.TweetMapper;
 import com.cooksys.app.repositories.HashtagRepository;
 import com.cooksys.app.repositories.TweetRepository;
@@ -31,6 +34,7 @@ import com.cooksys.app.services.TweetService;
 public class TweetServiceImpl implements TweetService{
 
     private final TweetMapper tweetMapper;
+    private final CredentialsMapper credentialsMapper;
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
     private final HashtagRepository hashtagRepository;
@@ -90,4 +94,20 @@ public class TweetServiceImpl implements TweetService{
 
     }
 
+    @Override
+    public void likeTweet(CredentialsDto credentialsDto, Long id) {
+        //find tweet with id
+        //Tweet tweetToLike = tweetRepository.findById
+        Optional<Tweet> optionalTweet = tweetRepository.findById(id);
+        if (optionalTweet.isEmpty()) throw new NotFoundException("Tweet with id " + id + " not found.");
+        Tweet tweetToLike = optionalTweet.get();
+        if (tweetToLike.isDeleted()) throw new BadRequestException("Tweet with id " + id + " has been deleted");
+        //find User with credentials
+        Optional<User> optionalUser = userRepository.findByCredentials(credentialsMapper.DtoToEntity(credentialsDto));
+        //Only modifying User entity: add Tweet to User.likes
+        if (optionalUser.isEmpty()) throw new NotFoundException("User with credentials " + credentialsMapper.DtoToEntity(credentialsDto) + " not found.");
+        User user = optionalUser.get();
+        user.getLikes().add(tweetToLike);
+        userRepository.saveAndFlush(user);
+    }
 }

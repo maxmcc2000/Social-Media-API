@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 import com.cooksys.app.exceptions.*;
 import com.cooksys.app.repositories.TweetRepository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +36,11 @@ public class UserServiceImpl implements UserService {
     private final TweetRepository tweetRepository;
     private final TweetMapper tweetMapper;
     
-    
+    private User getUserByCredentials(Credentials credentials) {
+        Optional<User> optionalUser = userRepository.findByCredentials(credentials);
+        if (optionalUser.isEmpty()) throw new NotFoundException("User with credentials " + credentials + " not found");
+        return optionalUser.get();
+    }
     
     @Override
     public User getUser(String username) {
@@ -79,7 +80,8 @@ public class UserServiceImpl implements UserService {
     		throw new BadRequestException("Null credentials lookup");
     	}
     	
-    	User u = userRepository.findByCredentials(credentialsMapper.DtoToEntity(c));
+    	//User u = userRepository.findByCredentials(credentialsMapper.DtoToEntity(c));
+        User u = getUserByCredentials(credentialsMapper.DtoToEntity(c));
 
     	if(u == null)
     		throw new NotAuthorizedException("Unauthorized username or password");
@@ -113,7 +115,8 @@ public class UserServiceImpl implements UserService {
 
             throw new NotAuthorizedException("Invalid username or password.");
 
-        } User user = userRepository.findByCredentials(credentialsMapper.DtoToEntity(credentialsDto));
+        } //User user = userRepository.findByCredentials(credentialsMapper.DtoToEntity(credentialsDto));
+        User user = getUserByCredentials(credentialsMapper.DtoToEntity(credentialsDto));
 
         if (user.getFollowing().stream().findFirst().filter(e -> e.getCredentials().getUsername().equals(username)).isPresent()) {
 
@@ -142,7 +145,8 @@ public class UserServiceImpl implements UserService {
 
             throw new NotAuthorizedException("Invalid username or password.");
 
-        } User user = userRepository.findByCredentials(credentialsMapper.DtoToEntity(credentialsDto));
+        } //User user = userRepository.findByCredentials(credentialsMapper.DtoToEntity(credentialsDto));
+        User user = getUserByCredentials(credentialsMapper.DtoToEntity(credentialsDto));
 
         if (user.getFollowing().stream().findFirst().filter(e -> e.getCredentials().getUsername().equals(username)).isEmpty()) {
 
@@ -208,6 +212,7 @@ public class UserServiceImpl implements UserService {
             }
         }
         return tweetMapper.entitiesToResponseDtos(nonDeletedTweets);
+
     }
     
     @Override
