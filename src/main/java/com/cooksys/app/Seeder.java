@@ -1,27 +1,27 @@
-package com.cooksys.app;
-
-import com.cooksys.app.entities.*;
-import com.cooksys.app.repositories.HashtagRepository;
-import com.cooksys.app.repositories.TweetRepository;
-import com.cooksys.app.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-@Component
-@RequiredArgsConstructor
-public class Seeder implements CommandLineRunner {
-
-    private final HashtagRepository hashtagRepository;
-    private final TweetRepository tweetRepository;
-    private final UserRepository userRepository;
-
-    @Override
-    public void run(String... args) throws Exception {
+//package com.cooksys.app;
+//
+//import com.cooksys.app.entities.*;
+//import com.cooksys.app.repositories.HashtagRepository;
+//import com.cooksys.app.repositories.TweetRepository;
+//import com.cooksys.app.repositories.UserRepository;
+//import lombok.RequiredArgsConstructor;
+//import org.springframework.boot.CommandLineRunner;
+//import org.springframework.stereotype.Component;
+//
+//import java.util.ArrayList;
+//import java.util.Arrays;
+//import java.util.List;
+//
+//@Component
+//@RequiredArgsConstructor
+//public class Seeder implements CommandLineRunner {
+//
+//    private final HashtagRepository hashtagRepository;
+//    private final TweetRepository tweetRepository;
+//    private final UserRepository userRepository;
+//
+//    @Override
+//    public void run(String... args) throws Exception {
 
 //    	// ----- HASHTAGS -----
 //
@@ -293,7 +293,8 @@ public class Seeder implements CommandLineRunner {
         List<User> followers_1 = List.of(user5, deletedUser);
         user1.setFollowers(followers_1);
         userRepository.saveAndFlush(user1);
-        */
+
     }
 
 }
+*/

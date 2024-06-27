@@ -1,10 +1,6 @@
 package com.cooksys.app.services;
 
-import com.cooksys.app.dtos.CredentialsDto;
-import com.cooksys.app.dtos.TweetRequestDto;
-import com.cooksys.app.dtos.ContextDto;
-import com.cooksys.app.dtos.TweetResponseDto;
-import com.cooksys.app.dtos.UserResponseDto;
+import com.cooksys.app.dtos.*;
 
 import java.util.List;
 
@@ -35,4 +31,6 @@ public interface TweetService {
     List<UserResponseDto> getLikedTweetUsers(Long id);
 
     TweetResponseDto createRepost(Long id, CredentialsDto credentialsDto);
+
+    List<HashtagResponseDto> getTweetHashtags(Long id);
 }
