@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface UserService {
 
 	
-	User getUser(String username);
+	UserResponseDto getUser(String username);
 	
 	UserResponseDto setUser(String username, UserRequestDto u);
 	

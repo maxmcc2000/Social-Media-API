@@ -20,7 +20,7 @@ public class UserController {
     private final UserService userService;
     
     @GetMapping("/@{username}")
-    public User getUsername(@PathVariable String username) {
+    public UserResponseDto getUser(@PathVariable String username) {
     	return userService.getUser(username);
     }
     
@@ -50,6 +50,7 @@ public class UserController {
     public List<UserResponseDto> getAllUsers(){
         return userService.getAllUsers();
     }
+    
     @PostMapping
     public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
         return userService.createUser(userRequestDto);

@@ -43,14 +43,17 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public User getUser(String username) {
+    public UserResponseDto getUser(String username) {
     	
     	User u = userRepository.findByCredentialsUsername(username);
     	
     	if(u == null)
     		throw new NotFoundException("User not found");
 
-    	return u;
+    	UserResponseDto resp = userMapper.entityToDto(u);
+    	resp.setUsername(u.getCredentials().getUsername());
+    	
+    	return resp;
     }
     
     public UserResponseDto setUser(String username, UserRequestDto u) {
@@ -169,13 +172,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getAllUsers() {
-        List<User> notDeleted = new ArrayList<>();
-        for (User user : userRepository.findAll()) {
+    	
+    	List<UserResponseDto> responseDtos  = new ArrayList<>();
+        
+    	
+    	for (User user : userRepository.findAll()) {
             //System.out.println(user.getProfile());
-            if (!user.isDeleted()) notDeleted.add(user);
+            if (!user.isDeleted()) {
+            	UserResponseDto entityToAdd = userMapper.entityToDto(user);
+            	entityToAdd.setUsername(user.getCredentials().getUsername());
+            	responseDtos.add(entityToAdd);
+            }
         }
+               
         //System.out.println(notDeleted.get(0).toString());
-        return userMapper.entitiesToDtos(notDeleted);
+        return responseDtos;
     }
 
     @Override
