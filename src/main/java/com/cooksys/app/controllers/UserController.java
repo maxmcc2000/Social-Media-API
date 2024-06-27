@@ -37,7 +37,7 @@ public class UserController {
 
 
     @GetMapping("/@{username}/following")
-    public List<User> getFollowers(@PathVariable String username) {
+    public List<User> getFollowing(@PathVariable String username) {
         return userService.getFollowers(username);
     }
 
@@ -73,6 +73,11 @@ public class UserController {
     @GetMapping("/@{username}/mentions") 
     public List<TweetResponseDto> getMen(@PathVariable String username){
     	return userService.getMen(username);
+    }
+    
+    @GetMapping("@{username}/followers")
+    public List<User> getFollowers(@PathVariable String username){
+    	return userService.getFollowers(username);
     }
     
     
