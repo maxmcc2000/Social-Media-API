@@ -287,6 +287,7 @@ public class TweetServiceImpl implements TweetService{
         Tweet newTweet = new Tweet();
         // set repost of to original tweet
         newTweet.setRepostOf(originalTweet);
+        newTweet.setDeleted(false);
 
         User user = getUser(credentialsMapper.DtoToEntity(credentialsDto));
         //Update User's tweets
@@ -304,5 +305,27 @@ public class TweetServiceImpl implements TweetService{
         if (tweet.isDeleted()) throw new NotFoundException("Tweet with id " + id + " has been deleted.");
         List<Hashtag> tags = tweet.getHashtags();
         return hashtagMapper.entitiesToDtos(tags);
+    }
+
+    @Override
+    public TweetResponseDto replyToTweet(Long id, TweetRequestDto tweetRequestDto) {
+
+        Tweet tweetToReplyTo = getTweet(id);
+
+        if (tweetToReplyTo.isDeleted()) throw new NotFoundException("Tweet with id " + id + " has been deleted.");
+
+        Credentials credentials = credentialsMapper.DtoToEntity(tweetRequestDto.getCredentials());
+        User replyUser = getUser(credentials);
+
+        if (replyUser.isDeleted()) throw new NotFoundException("User with credentials " + credentials.toString() + " has been deleted.");
+        if (tweetRequestDto.getContent() == null) throw new BadRequestException("The reply has no content.");
+
+        Tweet reply = tweetMapper.requestDtoToEntity(tweetRequestDto);
+        reply.setDeleted(false);
+        reply.setAuthor(replyUser);
+        tweetToReplyTo.getReplies().add(reply);
+        reply.setInReplyTo(tweetToReplyTo);
+
+        return tweetMapper.entityTodto(reply);
     }
 }
