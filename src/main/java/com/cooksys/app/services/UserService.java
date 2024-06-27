@@ -16,7 +16,7 @@ public interface UserService {
 	
 	User getUser(String username);
 	
-	User setUser(UserRequestDto u, String username);
+	UserResponseDto setUser(UserRequestDto u, String username);
 	
 	User softDelete(CredentialsDto c);
 	

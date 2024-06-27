@@ -52,9 +52,9 @@ public class UserServiceImpl implements UserService {
     	return u;
     }
     
-    public User setUser(UserRequestDto u, String username) {
+    public UserResponseDto setUser(UserRequestDto u, String username) {
     	    	
-    	if(u == null || username == null)
+    	if(u == null || username == null || u.getProfileDto() == null)
     		throw new BadRequestException("Null user lookup");
     	
     	User userFound = userRepository.findByCredentialsUsername(username);
@@ -65,11 +65,17 @@ public class UserServiceImpl implements UserService {
     	if (!userFound.getCredentials().equals(credentialsMapper.DtoToEntity(u.getCredentialsDto())))
     		throw new NotAuthorizedException("Invalid password");
     	else {
-    		
-    		userFound.setProfile(profileMapper.DtoToEntity(u.getProfileDto()));
-    		userRepository.save(userFound);
-    		return userFound;     		
+
+    		if (u.getProfileDto().getEmail() != null) {
+
+                userFound.setProfile(profileMapper.DtoToEntity(u.getProfileDto()));
+
+            } UserResponseDto userResponseDto = userMapper.entityToDto(userRepository.saveAndFlush(userFound));
+            userResponseDto.setUsername(username);
+            return userResponseDto;
+
     	}
+
     }
     
     

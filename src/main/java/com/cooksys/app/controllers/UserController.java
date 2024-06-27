@@ -24,8 +24,8 @@ public class UserController {
     	return userService.getUser(username);
     }
     
-    @PatchMapping("@{username}")
-    public User setUsername(@RequestBody UserRequestDto u, @PathVariable String username) {
+    @PatchMapping("/@{username}")
+    public UserResponseDto setUsername(@RequestBody UserRequestDto u, @PathVariable String username) {
     	return userService.setUser(u, username);
     }
     
