@@ -28,8 +28,12 @@ public class TweetController {
     }
     
     @GetMapping
-    
     public ContextDto getContext(@PathVariable long id){
     	return tweetService.getContext(id);
+	}
+
+    @GetMapping("/{id}")
+    public TweetResponseDto retrieveTweetById(@PathVariable Long id) {
+        return tweetService.retrieveTweetById(id);
     }
 }

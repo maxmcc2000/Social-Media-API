@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Optional;
@@ -73,7 +74,7 @@ public class TweetServiceImpl implements TweetService{
             String match = matcher.group().replace("#", "");
             Hashtag hashtag;
             if (hashtagRepository.existsByLabel(match)) {
-                hashtag = hashtagRepository.findByLabel(match);
+                hashtag = hashtagRepository.findByLabel(match).get();
                 hashtag.setLastUsed(Timestamp.valueOf(LocalDateTime.now()));
             } else {
                 hashtag = hashtagService.createHashtag(match);
@@ -95,8 +96,7 @@ public class TweetServiceImpl implements TweetService{
     }
     
     @Override 
-    
-    	public List<TweetResponseDto> getContext(long id){
+    public List<TweetResponseDto> getContext(long id){
     	
     	Optional<Tweet> optional = tweetRepository.findById(id);
     	
@@ -157,9 +157,14 @@ public class TweetServiceImpl implements TweetService{
     	}
     	
     	
-    	
-    	
-    	
+    	 	
+    public TweetResponseDto retrieveTweetById(Long id) {
+        Optional<Tweet> tweet = tweetRepository.findById(id);
+        if (tweet.isEmpty()) {
+            throw new BadRequestException("Tweet does not exist yet.");
+
+        } return tweetMapper.entityTodto(tweet.get());
+    }
 }
 
 
