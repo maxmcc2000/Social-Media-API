@@ -33,4 +33,6 @@ public interface TweetService {
 
 
     List<UserResponseDto> getLikedTweetUsers(Long id);
+
+    TweetResponseDto createRepost(Long id, CredentialsDto credentialsDto);
 }
