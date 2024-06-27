@@ -1,11 +1,7 @@
 package com.cooksys.app.services.impl;
 
+import com.cooksys.app.dtos.*;
 import com.cooksys.app.dtos.CredentialsDto;
-import com.cooksys.app.dtos.UserResponseDto;
-import com.cooksys.app.dtos.CredentialsDto;
-import com.cooksys.app.dtos.TweetRequestDto;
-import com.cooksys.app.dtos.TweetResponseDto;
-import com.cooksys.app.dtos.ContextDto;
 import com.cooksys.app.entities.Credentials;
 import com.cooksys.app.entities.Hashtag;
 import com.cooksys.app.entities.Tweet;
@@ -14,6 +10,7 @@ import com.cooksys.app.exceptions.BadRequestException;
 import com.cooksys.app.exceptions.NotAuthorizedException;
 import com.cooksys.app.exceptions.NotFoundException;
 import com.cooksys.app.mapper.CredentialsMapper;
+import com.cooksys.app.mapper.HashtagMapper;
 import com.cooksys.app.mapper.TweetMapper;
 import com.cooksys.app.mapper.UserMapper;
 import com.cooksys.app.repositories.HashtagRepository;
@@ -45,6 +42,7 @@ public class TweetServiceImpl implements TweetService{
 	private final UserMapper usermapper;
     private final TweetMapper tweetMapper;
     private final CredentialsMapper credentialsMapper;
+    private final HashtagMapper hashtagMapper;
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
     private final HashtagRepository hashtagRepository;
@@ -298,5 +296,13 @@ public class TweetServiceImpl implements TweetService{
         userRepository.saveAndFlush(user);
 
         return tweetMapper.entityTodto(newTweet);
+    }
+
+    @Override
+    public List<HashtagResponseDto> getTweetHashtags(Long id) {
+        Tweet tweet = getTweet(id);
+        if (tweet.isDeleted()) throw new NotFoundException("Tweet with id " + id + " has been deleted.");
+        List<Hashtag> tags = tweet.getHashtags();
+        return hashtagMapper.entitiesToDtos(tags);
     }
 }

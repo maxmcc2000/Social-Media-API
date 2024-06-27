@@ -1,10 +1,6 @@
 package com.cooksys.app.controllers;
 
-import com.cooksys.app.dtos.CredentialsDto;
-import com.cooksys.app.dtos.TweetRequestDto;
-import com.cooksys.app.dtos.ContextDto;
-import com.cooksys.app.dtos.UserResponseDto;
-import com.cooksys.app.dtos.TweetResponseDto;
+import com.cooksys.app.dtos.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,5 +67,10 @@ public class TweetController {
     @PostMapping("/{id}/repost")
     public TweetResponseDto createRepost(@PathVariable("id") Long id, @RequestBody CredentialsDto credentialsDto) {
         return tweetService.createRepost(id, credentialsDto);
+    }
+
+    @GetMapping("/{id}/tags")
+    public List<HashtagResponseDto> getTweetHashtags(@PathVariable("id") Long id) {
+        return tweetService.getTweetHashtags(id);
     }
 }
