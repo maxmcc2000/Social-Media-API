@@ -1,5 +1,6 @@
 package com.cooksys.app.services.impl;
 
+import com.cooksys.app.dtos.UserResponseDto;
 import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.dtos.TweetRequestDto;
 import com.cooksys.app.dtos.TweetResponseDto;
@@ -13,6 +14,7 @@ import com.cooksys.app.exceptions.NotAuthorizedException;
 import com.cooksys.app.exceptions.NotFoundException;
 import com.cooksys.app.mapper.CredentialsMapper;
 import com.cooksys.app.mapper.TweetMapper;
+import com.cooksys.app.mapper.UserMapper;
 import com.cooksys.app.repositories.HashtagRepository;
 import com.cooksys.app.repositories.TweetRepository;
 import com.cooksys.app.repositories.UserRepository;
@@ -39,6 +41,7 @@ import com.cooksys.app.services.TweetService;
 @RequiredArgsConstructor
 public class TweetServiceImpl implements TweetService{
 
+	private final UserMapper usermapper;
     private final TweetMapper tweetMapper;
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
@@ -213,8 +216,19 @@ public class TweetServiceImpl implements TweetService{
         if (tweet.isEmpty() || tweet.get().isDeleted()) 
             throw new NotFoundException("Tweet does not exist.");   
     	
-        return tweetMapper.entitiesToResponseDtos(tweetRepository.findAllByRepostOf(tweet.get())); 
+        return tweetMapper.entitiesToResponseDtos(tweetRepository.findAllByRepostOfIsTweetAndNotDeleted(tweet.get())); 
 
+    }
+    
+    @Override
+    public List<UserResponseDto> getMentions(@PathVariable Long id){
+    	
+        Optional<Tweet> tweet = tweetRepository.findById(id);
+        if (tweet.isEmpty() || tweet.get().isDeleted()) 
+            throw new NotFoundException("Tweet does not exist.");   
+
+    	return usermapper.entitiesToDtos(tweet.get().mentionNotDeleted());
+    	
     }
 
 

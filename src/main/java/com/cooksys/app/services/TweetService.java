@@ -4,6 +4,7 @@ import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.dtos.TweetRequestDto;
 import com.cooksys.app.dtos.ContextDto;
 import com.cooksys.app.dtos.TweetResponseDto;
+import com.cooksys.app.dtos.UserResponseDto;
 
 import java.util.List;
 
@@ -25,5 +26,8 @@ public interface TweetService {
     TweetResponseDto deleteTweetById(Long id, CredentialsDto credentialsDto);
     
     List<TweetResponseDto> getReposts(@PathVariable Long id);
+    
+    List<UserResponseDto> getMentions(@PathVariable Long id);
+
 
 }
