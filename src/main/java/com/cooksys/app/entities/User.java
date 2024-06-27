@@ -1,9 +1,7 @@
 package com.cooksys.app.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -15,7 +13,9 @@ import java.util.List;
 @Table(name = "user_table")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class User {
 
     @Id
@@ -56,7 +56,7 @@ public class User {
     )
     private List<Tweet> likes;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Tweet> tweets;
 
     @ManyToMany

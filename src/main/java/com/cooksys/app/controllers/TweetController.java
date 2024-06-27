@@ -1,5 +1,6 @@
 package com.cooksys.app.controllers;
 
+import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.dtos.TweetRequestDto;
 import com.cooksys.app.dtos.TweetResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,10 @@ public class TweetController {
     @GetMapping("/{id}")
     public TweetResponseDto retrieveTweetById(@PathVariable Long id) {
         return tweetService.retrieveTweetById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public TweetResponseDto deleteTweetById(@PathVariable Long id, @RequestBody CredentialsDto credentialsDto) {
+        return tweetService.deleteTweetById(id, credentialsDto);
     }
 }
