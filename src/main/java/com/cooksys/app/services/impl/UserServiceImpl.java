@@ -175,7 +175,18 @@ public class UserServiceImpl implements UserService {
             if (!user.isDeleted()) notDeleted.add(user);
         }
         //System.out.println(notDeleted.get(0).toString());
-        return userMapper.entitiesToDtos(notDeleted);
+        List<UserResponseDto> userResponseDtos = userMapper.entitiesToDtos(notDeleted);
+        //UserResponseDto[] userDtos = new UserResponseDto[notDeleted.size()];
+        //String[] usernames = new String[userResponseDtos.size()];
+        int i = 0;
+        for (UserResponseDto userDto : userResponseDtos) {
+            userDto.setUsername(notDeleted.get(i).getCredentials().getUsername());
+            //userDtos[i] = userDto;
+//            usernames[i] = notDeleted.get(i).getCredentials().getUsername();
+            i++;
+        }
+
+        return userResponseDtos;
     }
 
     @Override
@@ -213,6 +224,8 @@ public class UserServiceImpl implements UserService {
             newUser.setDeleted(false);
             UserResponseDto userResponseDto = userMapper.entityToDto(userRepository.saveAndFlush(newUser));
             userResponseDto.setUsername(credentials.getUsername());
+            userResponseDto.setJoined(newUser.getJoined());
+            userResponseDto.setProfile(newUser.getProfile());
             return userResponseDto;
 
         }
