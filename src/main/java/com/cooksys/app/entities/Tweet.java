@@ -48,5 +48,19 @@ public class Tweet {
 
     @ManyToMany(mappedBy = "mentions")
     private List<User> mentionedUsers;
+    
+    
+    
+    //helper method
+    public List<User> mentionNotDeleted(){
+    	ArrayList<User> notDeleted = new ArrayList<User>();
+    	
+    	for(User u : mentionedUsers) {
+    		if(!u.isDeleted())
+    			notDeleted.add(u);
+    	}
+    	
+    	return notDeleted;
+    }
 
 }

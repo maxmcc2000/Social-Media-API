@@ -3,6 +3,7 @@ package com.cooksys.app.controllers;
 import com.cooksys.app.dtos.CredentialsDto;
 import com.cooksys.app.dtos.TweetRequestDto;
 import com.cooksys.app.dtos.ContextDto;
+import com.cooksys.app.dtos.UserResponseDto;
 import com.cooksys.app.dtos.TweetResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,21 @@ public class TweetController {
     @GetMapping("/{id}")
     public TweetResponseDto retrieveTweetById(@PathVariable Long id) {
         return tweetService.retrieveTweetById(id);
+    }
+    
+    @GetMapping("/{id}/replies")
+    public List<TweetResponseDto> getReplies(@PathVariable Long id){
+    	return tweetService.getReplies(id);
+    }
+    
+    @GetMapping("/{id}/reposts")
+    public List<TweetResponseDto> getReposts(@PathVariable Long id){
+    	return getReposts(id);
+    }
+    
+    @GetMapping("{id}/mentions")
+    public List<UserResponseDto> getMentions(@PathVariable Long id){
+    	return getMentions(id);
     }
 
     @DeleteMapping("/{id}")
