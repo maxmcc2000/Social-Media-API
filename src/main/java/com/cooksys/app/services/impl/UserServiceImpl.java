@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
 
     	UserResponseDto resp = userMapper.entityToDto(u);
     	resp.setUsername(u.getCredentials().getUsername());
-    	
+
     	return resp;
     }
     
@@ -172,10 +172,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getAllUsers() {
-    	
+
     	List<UserResponseDto> responseDtos  = new ArrayList<>();
-        
-    	
+
+
     	for (User user : userRepository.findAll()) {
             //System.out.println(user.getProfile());
             if (!user.isDeleted()) {
@@ -184,7 +184,7 @@ public class UserServiceImpl implements UserService {
             	responseDtos.add(entityToAdd);
             }
         }
-               
+
         //System.out.println(notDeleted.get(0).toString());
         return responseDtos;
     }
@@ -224,6 +224,8 @@ public class UserServiceImpl implements UserService {
             newUser.setDeleted(false);
             UserResponseDto userResponseDto = userMapper.entityToDto(userRepository.saveAndFlush(newUser));
             userResponseDto.setUsername(credentials.getUsername());
+            userResponseDto.setJoined(newUser.getJoined());
+            userResponseDto.setProfile(newUser.getProfile());
             return userResponseDto;
 
         }
