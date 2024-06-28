@@ -19,11 +19,9 @@ import com.cooksys.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import com.cooksys.app.services.UserService;
 import org.springframework.stereotype.Service;
-import com.cooksys.app.exceptions.*;
 import com.cooksys.app.repositories.TweetRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -92,34 +90,35 @@ public class UserServiceImpl implements UserService {
     }
     
     
-    public User softDelete(CredentialsDto c) {
+    public UserResponseDto softDelete(CredentialsDto c, String username) {
     	
-    	if(c == null) {
+    	if (c == null) {
     		throw new BadRequestException("Null credentials lookup");
     	}
-    	
-    	//User u = userRepository.findByCredentials(credentialsMapper.DtoToEntity(c));
+
         User u = getUserByCredentials(credentialsMapper.DtoToEntity(c));
 
-    	if(u == null)
-    		throw new NotAuthorizedException("Unauthorized username or password");
-    	if(u.isDeleted())
+    	if (u.isDeleted())
     		throw new BadRequestException("User already deleted");
-    	
-    	
+
+        if (!c.getUsername().equals(username)) {
+            throw new BadRequestException("You can only delete your own account.");
+        }
+
     	//deletes user
     	u.setDeleted(true);
-    	
-    	
+
     	//deletes all tweets use is author of
     	for(Tweet t : u.getTweets()) {
     		t.setDeleted(true);
+            tweetRepository.saveAndFlush(t);
     	}
     	
     	//should we also delete their mentions and likes too...? 
     	//if so, we must iterate and search other tables
-    	
-    	return u;
+    	UserResponseDto userResponseDto = userMapper.entityToDto(userRepository.saveAndFlush(u));
+        userResponseDto.setUsername(username);
+    	return userResponseDto;
     	
         }
     
@@ -232,16 +231,18 @@ public class UserServiceImpl implements UserService {
         //if this username is found in the database
         Optional<User> optionalUser = userRepository.findByCredentialsUsername(userRequestDto.getCredentialsDto().getUsername());
 
-        if (!optionalUser.isEmpty()) {
+        if (optionalUser.isPresent()) {
 
             //User existingUser = userRepository.findByCredentialsUsername(newUser.getCredentials().getUsername());
             User existingUser = getUserByUsername(newUser.getCredentials().getUsername());
 
             //if the given credentials match a deleted user
-            if (existingUser.isDeleted() && existingUser.getCredentials().equals(newUser.getCredentials())){
+            if (existingUser.isDeleted()){
 
                 existingUser.setDeleted(false);
-                return userMapper.entityToDto(existingUser);
+                UserResponseDto userResponseDto = userMapper.entityToDto(userRepository.saveAndFlush(existingUser));
+                userResponseDto.setUsername(existingUser.getCredentials().getUsername());
+                return userResponseDto;
 
             } else {
                 //username already taken

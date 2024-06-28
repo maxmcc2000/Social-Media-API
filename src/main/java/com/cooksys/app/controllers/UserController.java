@@ -57,8 +57,8 @@ public class UserController {
     }
     
     @DeleteMapping("/@{username}")
-    public User softDelete(@PathVariable CredentialsDto c) {
-    	return userService.softDelete(c);
+    public UserResponseDto softDelete(@RequestBody CredentialsDto c, @PathVariable String username) {
+    	return userService.softDelete(c, username);
     }
 
     @GetMapping("/@{username}/tweets")

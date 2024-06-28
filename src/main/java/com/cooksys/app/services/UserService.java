@@ -15,7 +15,7 @@ public interface UserService {
 	
 	UserResponseDto setUser(String username, UserRequestDto u);
 	
-	User softDelete(CredentialsDto c);
+	UserResponseDto softDelete(CredentialsDto c, String username);
 	
     void followUser(CredentialsDto credentials, String username);
 
