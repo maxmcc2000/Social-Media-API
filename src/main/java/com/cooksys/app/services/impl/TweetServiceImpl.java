@@ -116,7 +116,6 @@ public class TweetServiceImpl implements TweetService{
         TweetResponseDto tweetResponseDto = tweetMapper.entityTodto(tweetRepository.saveAndFlush(tweet));
 
         tweetResponseDto.getAuthor().setUsername(tweet.getAuthor().getCredentials().getUsername());
-        System.out.println("POST tweet Dto: " + tweetResponseDto);
 
         return tweetResponseDto;
 

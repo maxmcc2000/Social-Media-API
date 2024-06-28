@@ -19,8 +19,7 @@ public class HashtagController {
 	@GetMapping
 	public List<HashtagResponseDto> getAllHashtags() {
 		//Call hashtag service
-		List<HashtagResponseDto> allHashtagsDto = hashtagService.getAllHashtags();
-		return allHashtagsDto;
+        return hashtagService.getAllHashtags();
 	}
 	
 	@GetMapping("{label}")

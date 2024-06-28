@@ -37,20 +37,6 @@ public class Hashtag {
     	Instant now = Instant.now();
     	firstUsed = Timestamp.from(now);
     	lastUsed = firstUsed;
-    	if (label != null) {
-            label = label.toLowerCase();
-        }
     }
-    
-//    @PostLoad //lastUsed actually needs to be updated every time a new tweet is tagged with the hashtag
-    			//This means our service should update lastUsed, instead of here
-//    protected void onLoad() {
-//    }
 
-    @PreUpdate
-    private void formatLabel() { //Making our labels case insensitive when updating hashtags
-        if (label != null) {
-            label = label.toLowerCase();
-        }
-    }
 }
