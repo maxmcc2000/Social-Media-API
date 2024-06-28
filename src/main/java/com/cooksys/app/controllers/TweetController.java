@@ -65,17 +65,17 @@ public class TweetController {
     }
 
     @PostMapping("/{id}/repost")
-    public TweetResponseDto createRepost(@PathVariable("id") Long id, @RequestBody CredentialsDto credentialsDto) {
+    public TweetResponseDto createRepost(@PathVariable Long id, @RequestBody CredentialsDto credentialsDto) {
         return tweetService.createRepost(id, credentialsDto);
     }
 
     @GetMapping("/{id}/tags")
-    public List<HashtagResponseDto> getTweetHashtags(@PathVariable("id") Long id) {
+    public List<HashtagResponseDto> getTweetHashtags(@PathVariable Long id) {
         return tweetService.getTweetHashtags(id);
     }
 
     @PostMapping("/{id}/reply")
-    public TweetResponseDto replyToTweet(@PathVariable("id") Long id, @RequestBody TweetRequestDto tweetRequestDto) {
+    public TweetResponseDto replyToTweet(Long id, @RequestBody TweetRequestDto tweetRequestDto) {
         return tweetService.replyToTweet(id, tweetRequestDto);
     }
 }

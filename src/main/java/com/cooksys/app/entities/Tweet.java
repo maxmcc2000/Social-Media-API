@@ -48,7 +48,7 @@ public class Tweet {
         )
     private List<Hashtag> hashtags = new ArrayList<>(); //New field to relate with hashtags in a many to many relationship
 
-    @ManyToMany(mappedBy = "mentions")
+    @ManyToMany /// (mappedBy = "mentions")
     private List<User> mentionedUsers;
     
     
