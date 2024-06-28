@@ -48,21 +48,10 @@ public class Tweet {
         )
     private List<Hashtag> hashtags = new ArrayList<>(); //New field to relate with hashtags in a many to many relationship
 
-    @ManyToMany /// (mappedBy = "mentions")
+    @OneToMany /// (mappedBy = "mentions")
     private List<User> mentionedUsers;
     
     
-    
-    //helper method
-    public List<User> mentionNotDeleted(){
-    	ArrayList<User> notDeleted = new ArrayList<User>();
-    	
-    	for(User u : mentionedUsers) {
-    		if(!u.isDeleted())
-    			notDeleted.add(u);
-    	}
-    	
-    	return notDeleted;
-    }
+  
 
 }

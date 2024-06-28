@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class TweetResponseDto {
-
+	private long id; 
     private UserResponseDto author;
     private Timestamp posted;
     private String content;
