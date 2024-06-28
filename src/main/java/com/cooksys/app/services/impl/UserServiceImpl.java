@@ -19,6 +19,7 @@ import com.cooksys.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import com.cooksys.app.services.UserService;
 import org.springframework.stereotype.Service;
+import com.cooksys.app.exceptions.*;
 import com.cooksys.app.repositories.TweetRepository;
 
 import java.util.*;
@@ -40,7 +41,14 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isEmpty()) throw new NotFoundException("User with credentials " + credentials + " not found");
         return optionalUser.get();
     }
-    
+
+    private User getUserByUsername(String username) {
+        Optional<User> optionalUser = userRepository.findByCredentialsUsername(username);
+        if (optionalUser.isEmpty()) throw new NotFoundException("User " + username + " not found.");
+
+        return optionalUser.get();
+    }
+
     @Override
     public UserResponseDto getUser(String username) {
     	
@@ -136,7 +144,8 @@ public class UserServiceImpl implements UserService {
 
             throw new NotFoundException("User not found.");
 
-        } user.getFollowing().add(userRepository.findByCredentialsUsername(username).get());
+        } //user.getFollowing().add(userRepository.findByCredentialsUsername(username));
+        user.getFollowing().add(getUserByUsername(username));
         userRepository.saveAndFlush(user);
 
     }
@@ -221,9 +230,12 @@ public class UserServiceImpl implements UserService {
         }
 
         //if this username is found in the database
-        if (userRepository.findByCredentialsUsername(newUser.getCredentials().getUsername()).isPresent()) {
+        Optional<User> optionalUser = userRepository.findByCredentialsUsername(userRequestDto.getCredentialsDto().getUsername());
 
-            User existingUser = userRepository.findByCredentialsUsername(newUser.getCredentials().getUsername()).get();
+        if (!optionalUser.isEmpty()) {
+
+            //User existingUser = userRepository.findByCredentialsUsername(newUser.getCredentials().getUsername());
+            User existingUser = getUserByUsername(newUser.getCredentials().getUsername());
 
             //if the given credentials match a deleted user
             if (existingUser.isDeleted() && existingUser.getCredentials().equals(newUser.getCredentials())){
@@ -236,7 +248,8 @@ public class UserServiceImpl implements UserService {
                 throw new NotAuthorizedException("Username is already taken.");
             }
 
-        } else {
+        }
+        else {
 
             newUser.setDeleted(false);
             UserResponseDto userResponseDto = userMapper.entityToDto(userRepository.saveAndFlush(newUser));
@@ -251,21 +264,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<TweetResponseDto> getUserTweets(String username) {
-        User user = userRepository.findByCredentialsUsername(username).get();
+        User user = getUserByUsername(username);
+
+        if (user.isDeleted()) throw new NotFoundException("User " + username + " has been deleted.");
+
         List<Tweet> nonDeletedTweets = new ArrayList<>();
         for (Tweet tweet : user.getTweets()) {
             if (!tweet.isDeleted()) {
                 nonDeletedTweets.add(tweet);
             }
         }
+        System.out.println("nonDeletedTweets: " + nonDeletedTweets);
+        System.out.println("Tweet response dto: " + tweetMapper.entitiesToResponseDtos(nonDeletedTweets));
         return tweetMapper.entitiesToResponseDtos(nonDeletedTweets);
 
     }
     
     @Override
     public List<TweetResponseDto> getFeed(String username){
-    	User user = userRepository.findByCredentialsUsername(username).get();
-    	
+    	//User user = userRepository.findByCredentialsUsername(username);
+    	User user = getUserByUsername(username);
     	if(user == null || user.isDeleted()) {
             throw new NotFoundException("User not found.");
     	}
@@ -293,7 +311,8 @@ public class UserServiceImpl implements UserService {
     
     
     public List<TweetResponseDto> getMen(String username){
-    	User user = userRepository.findByCredentialsUsername(username).get();
+    	//User user = userRepository.findByCredentialsUsername(username);
+        User user = getUserByUsername(username);
     	
     	if(user == null || user.isDeleted()) {
             throw new NotFoundException("User not found.");

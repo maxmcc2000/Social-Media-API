@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +55,13 @@ public class TweetServiceImpl implements TweetService{
         return optionalTweet.get();
     }
 
+    private User getUserByUsername(String username) {
+        Optional<User> optionalUser = userRepository.findByCredentialsUsername(username);
+        if (optionalUser.isEmpty()) throw new NotFoundException("User " + username + " not found.");
+
+        return optionalUser.get();
+    }
+
     private User getUser(Credentials credentials) {
         Optional<User> optionalUser = userRepository.findByCredentials(credentials);
         if (optionalUser.isEmpty()) throw new NotFoundException("User with credentials " + credentials + " not found.");
@@ -74,7 +82,8 @@ public class TweetServiceImpl implements TweetService{
 
             throw new BadRequestException("Tweet must contain content.");
 
-        } tweet.setAuthor(userRepository.findByCredentialsUsername(tweetRequestDto.getCredentials().getUsername()).get());
+        } //tweet.setAuthor(userRepository.findByCredentialsUsername(tweetRequestDto.getCredentials().getUsername()));
+        tweet.setAuthor(getUserByUsername(tweetRequestDto.getCredentials().getUsername()));
 
         //creates a pattern of "@followed by text" and find each instance in our content, add user to tweet's mentionedUsers
         Matcher matcher = Pattern.compile("@\\w+").matcher(tweet.getContent());
@@ -82,7 +91,7 @@ public class TweetServiceImpl implements TweetService{
         while (matcher.find()) {
             String match = matcher.group().replace("@", "");
             if (userRepository.existsByCredentialsUsername(match)) {
-                tempList.add(userRepository.findByCredentialsUsername(match).get());
+                tempList.add(getUserByUsername(match));
             } tweet.setMentionedUsers(tempList);
         }
 
