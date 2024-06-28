@@ -71,8 +71,13 @@ public class TweetServiceImpl implements TweetService{
     @Override
     public TweetResponseDto createTweet(TweetRequestDto tweetRequestDto) {
 
-        if (!userRepository.existsByCredentialsUsername(tweetRequestDto.getCredentials().getUsername())) {
+        if (tweetRequestDto.getCredentials() == null) {
+            throw new BadRequestException("No credentials.");
+        } else if (tweetRequestDto.getCredentials().getPassword() == null) {
+            throw new BadRequestException("No password.");
+        }
 
+        if (!userRepository.existsByCredentialsUsername(tweetRequestDto.getCredentials().getUsername())) {
             throw new NotAuthorizedException("Invalid username or password");
 
         } Tweet tweet = tweetMapper.requestDtoToEntity(tweetRequestDto);
@@ -108,8 +113,12 @@ public class TweetServiceImpl implements TweetService{
                 hashtag = hashtagService.createHashtag(match);
             } tempHashtagList.add(hashtagRepository.saveAndFlush(hashtag));
         } tweet.setHashtags(tempHashtagList);
+        TweetResponseDto tweetResponseDto = tweetMapper.entityTodto(tweetRepository.saveAndFlush(tweet));
 
-        return tweetMapper.entityTodto(tweetRepository.saveAndFlush(tweet));
+        tweetResponseDto.getAuthor().setUsername(tweet.getAuthor().getCredentials().getUsername());
+        System.out.println("POST tweet Dto: " + tweetResponseDto);
+
+        return tweetResponseDto;
 
     }
 

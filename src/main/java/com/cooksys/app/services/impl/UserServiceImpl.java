@@ -274,8 +274,8 @@ public class UserServiceImpl implements UserService {
                 nonDeletedTweets.add(tweet);
             }
         }
-        System.out.println("nonDeletedTweets: " + nonDeletedTweets);
-        System.out.println("Tweet response dto: " + tweetMapper.entitiesToResponseDtos(nonDeletedTweets));
+//        System.out.println("nonDeletedTweets: " + nonDeletedTweets);
+//        System.out.println("Tweet response dto: " + tweetMapper.entitiesToResponseDtos(nonDeletedTweets));
         return tweetMapper.entitiesToResponseDtos(nonDeletedTweets);
 
     }
