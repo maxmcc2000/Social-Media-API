@@ -269,16 +269,17 @@ public class UserServiceImpl implements UserService {
 
         if (user.isDeleted()) throw new NotFoundException("User " + username + " has been deleted.");
 
-        List<Tweet> nonDeletedTweets = new ArrayList<>();
+        List<TweetResponseDto> nonDeletedTweets = new ArrayList<>();
+        
         for (Tweet tweet : user.getTweets()) {
             if (!tweet.isDeleted()) {
-                nonDeletedTweets.add(tweet);
+                TweetResponseDto resp = tweetMapper.entityTodto(tweet);
+    			nonDeletedTweets.add(resp);
             }
         }
 //        System.out.println("nonDeletedTweets: " + nonDeletedTweets);
 //        System.out.println("Tweet response dto: " + tweetMapper.entitiesToResponseDtos(nonDeletedTweets));
-        return tweetMapper.entitiesToResponseDtos(nonDeletedTweets);
-
+        return nonDeletedTweets;
     }
     
     @Override
@@ -289,49 +290,45 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("User not found.");
     	}
     	
-    	List<Tweet> feed = new ArrayList<>();
+    	List<TweetResponseDto> feed = new ArrayList<>();
 
     	for(Tweet t : user.getTweets()) {
-    		if(!t.isDeleted())
-    			feed.add(t);
+    		if(!t.isDeleted()) {
+    			TweetResponseDto resp = tweetMapper.entityTodto(t);
+    			feed.add(resp);
+    		}
+    	
     	}
+    	
     	for(User u : user.getFollowing()) {
     		if(!u.isDeleted()) {
     			for(Tweet t : u.getTweets()) {
-    				feed.add(t);
-    				if(!t.isDeleted())
-    					feed.add(t);
+    				if(!t.isDeleted()) {
+    					TweetResponseDto resp = tweetMapper.entityTodto(t);
+        				feed.add(resp);
+    				}
     			}
     		}
     	}
-    	Collections.sort(feed, Comparator.comparing(Tweet::getPosted).reversed());
-    	return tweetMapper.entitiesToResponseDtos(feed); 
-    	
-    	
+    	Collections.sort(feed, Comparator.comparing(TweetResponseDto::getPosted).reversed());
+    	return feed; 
     }
     
     
     public List<TweetResponseDto> getMen(String username){
     	//User user = userRepository.findByCredentialsUsername(username);
         User user = getUserByUsername(username);
-    	
-    	if(user == null || user.isDeleted()) {
+      
+    	if(user == null || user.isDeleted()) 
             throw new NotFoundException("User not found.");
-    	}
-    	
-    	List<Tweet> mentions = new ArrayList<>();    	
-    	Iterable<Tweet> tweets = tweetRepository.findAll();
     	
     	
-    	for(Tweet t : tweets) {
-    		if(!t.isDeleted()) {
-    			if(t.getMentionedUsers().contains(user)) 
-    				mentions.add(t);
-    		}
-    	}
+   
+    	List<TweetResponseDto> mentions = tweetMapper.entitiesToResponseDtos(tweetRepository.findTweetsByMentionedUsersAndNotDeleted(user));
     	
-    	Collections.sort(mentions, Comparator.comparing(Tweet::getPosted).reversed());
-    	return tweetMapper.entitiesToResponseDtos(mentions);    
+    	
+    	Collections.sort(mentions, Comparator.comparing(TweetResponseDto::getPosted).reversed());
+    	return mentions; 
     }
     
     public List<UserResponseDto> getFollowers(String username){

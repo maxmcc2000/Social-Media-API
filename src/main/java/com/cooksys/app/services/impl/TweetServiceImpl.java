@@ -111,8 +111,10 @@ public class TweetServiceImpl implements TweetService{
                 hashtag.setLastUsed(Timestamp.valueOf(LocalDateTime.now()));
             } else {
                 hashtag = hashtagService.createHashtag(match);
+                hashtag.setLastUsed(Timestamp.valueOf(LocalDateTime.now()));
             } tempHashtagList.add(hashtagRepository.saveAndFlush(hashtag));
         } tweet.setHashtags(tempHashtagList);
+        
         TweetResponseDto tweetResponseDto = tweetMapper.entityTodto(tweetRepository.saveAndFlush(tweet));
 
         tweetResponseDto.getAuthor().setUsername(tweet.getAuthor().getCredentials().getUsername());
