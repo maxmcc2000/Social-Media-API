@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Data
 public class UserResponseDto {
-
+	
     private Timestamp joined;
 
     private Profile profile;

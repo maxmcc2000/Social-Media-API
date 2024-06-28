@@ -42,12 +42,12 @@ public class TweetController {
 
     @GetMapping("/{id}/reposts")
     public List<TweetResponseDto> getReposts(@PathVariable Long id){
-    	return getReposts(id);
+    	return tweetService.getReposts(id);
     }
 
     @GetMapping("{id}/mentions")
     public List<UserResponseDto> getMentions(@PathVariable Long id){
-    	return getMentions(id);
+    	return tweetService.getMentions(id);
     }
 
     @DeleteMapping("/{id}")
@@ -75,7 +75,7 @@ public class TweetController {
     }
 
     @PostMapping("/{id}/reply")
-    public TweetResponseDto replyToTweet(Long id, @RequestBody TweetRequestDto tweetRequestDto) {
+    public TweetResponseDto replyToTweet(@PathVariable Long id, @RequestBody TweetRequestDto tweetRequestDto) {
         return tweetService.replyToTweet(id, tweetRequestDto);
     }
 }

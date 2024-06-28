@@ -50,6 +50,7 @@ public class TweetServiceImpl implements TweetService{
 
     //Helper method to get a Tweet by id
     private Tweet getTweet(Long id) {
+   	
         Optional<Tweet> optionalTweet = tweetRepository.findById(id);
         if (optionalTweet.isEmpty()) throw new NotFoundException("Tweet with id " + id + " not found.");
         return optionalTweet.get();
@@ -115,9 +116,12 @@ public class TweetServiceImpl implements TweetService{
             } tempHashtagList.add(hashtagRepository.saveAndFlush(hashtag));
         } tweet.setHashtags(tempHashtagList);
         
-        TweetResponseDto tweetResponseDto = tweetMapper.entityTodto(tweetRepository.saveAndFlush(tweet));
-
+        tweetRepository.saveAndFlush(tweet);
+        
+        TweetResponseDto tweetResponseDto = tweetMapper.entityTodto(tweet);
+        tweetResponseDto.setId(tweet.getId());
         tweetResponseDto.getAuthor().setUsername(tweet.getAuthor().getCredentials().getUsername());
+        
 
         return tweetResponseDto;
 
@@ -155,25 +159,31 @@ public class TweetServiceImpl implements TweetService{
     @Override
     public ContextDto getContext(long id){
 
-    	Optional<Tweet> optional = tweetRepository.findById(id);
-
-    	if(optional.isEmpty())
-    		throw new NotFoundException("User not found.");
-
+    	Tweet entity = getTweet(id);
+    	
+    	
+    	if(entity.isDeleted()) {
+        	throw new NotFoundException("Cannot find context of deleted tweet");
+    	}
+    	
+    	TweetResponseDto t = tweetMapper.entityTodto(entity);
+    	
     	ContextDto context = new ContextDto();
+    	context.setTarget(t);
+    	
+    	//System.out.println(entity.getAuthor());
+    	//System.out.println(entity.getContent());
+    	//out.println(entity.getInReplyTo().getContent());
 
-    	Tweet entity = optional.get();
-    	context.setTarget(entity);
-
-
-    	ArrayList<Tweet> before = new ArrayList<Tweet>();
-    	ArrayList<Tweet> after = new ArrayList<Tweet>();
+    	ArrayList<TweetResponseDto> before = new ArrayList<TweetResponseDto>();
+    	ArrayList<TweetResponseDto> after = new ArrayList<TweetResponseDto>();
 
     	Tweet prevTweet = entity.getInReplyTo();
 
     	while(prevTweet != null) {
     		if(!prevTweet.isDeleted())
-    			before.add(prevTweet);
+    			before.add(tweetMapper.entityTodto(prevTweet));
+    		prevTweet = prevTweet.getInReplyTo();
     	}
 
     	//puts  list in chronological order
@@ -181,34 +191,30 @@ public class TweetServiceImpl implements TweetService{
     	context.setBefore(before);
 
 
-    	for(Tweet t : entity.getReplies()) {
-    		replyHelper(after, t);
+    	if(!(entity.getReplies() == null) && !entity.getReplies().isEmpty()) {
+    	for(Tweet rep : entity.getReplies()) {
+    		replyHelper(after, rep);
+    	}
     	}
 
 
-    	after.sort(Comparator.comparing(Tweet::getPosted));
+    	after.sort(Comparator.comparing(TweetResponseDto::getPosted));
     	context.setAfter(after);
 
     	return context;
     }
 
     	//assume two tweets can never reply to one another
-    	public void replyHelper(ArrayList<Tweet> after, Tweet replyTweet){
-
-    		if(replyTweet == null) {
-    			if(!replyTweet.isDeleted()) {
-    				after.add(replyTweet);
-    			}
-    		}
-
-    		for(Tweet t : replyTweet.getReplies()) {
-
-    			if(!replyTweet.isDeleted()) {
-    				after.add(replyTweet);
-    			}
-    			 replyHelper(after, t);
-    		}
-
+    	public void replyHelper(ArrayList<TweetResponseDto> after, Tweet replyTweet){
+    		
+    		if(!(replyTweet.isDeleted()))
+    			after.add(tweetMapper.entityTodto(replyTweet));
+    		
+			if(!(replyTweet.getReplies() == null) && !replyTweet.getReplies().isEmpty()) {
+				for(Tweet t : replyTweet.getReplies()) {
+						replyHelper(after, t);
+				}
+			}
     	}
 
 
@@ -236,7 +242,13 @@ public class TweetServiceImpl implements TweetService{
 //
 //        } Tweet tweetToDeleted = tweet.get();
 
+    	
+    	    	
         Tweet tweetToDeleted = getTweet(id);
+        
+        if(tweetToDeleted.isDeleted()) {
+        	throw new NotFoundException("Tweet already deleted");
+        }
 
         Credentials credentials = tweetToDeleted.getAuthor().getCredentials();
         Credentials credentials1 = credentialsMapper.DtoToEntity(credentialsDto);
@@ -246,6 +258,7 @@ public class TweetServiceImpl implements TweetService{
             throw new NotAuthorizedException("You cannot delete a Tweet that you didn't make.");
 
         } tweetToDeleted.setDeleted(true);
+        tweetRepository.saveAndFlush(tweetToDeleted);
         return tweetMapper.entityTodto(tweetToDeleted);
 
     }
@@ -279,7 +292,17 @@ public class TweetServiceImpl implements TweetService{
         if (tweet.isEmpty() || tweet.get().isDeleted())
             throw new NotFoundException("Tweet does not exist.");
 
-    	return usermapper.entitiesToDtos(tweet.get().mentionNotDeleted());
+    	ArrayList<UserResponseDto> respList = new ArrayList();
+    	    
+    	List<User> mentioned = tweet.get().getMentionedUsers();
+    	
+    	for(User u : mentioned) {
+    		if(!u.isDeleted()) {
+    			respList.add(usermapper.entityToDto(u));
+    		}
+    	}
+    	
+    	return respList;
 
     }
 
@@ -313,6 +336,7 @@ public class TweetServiceImpl implements TweetService{
         //set author of tweet to user
         newTweet.setAuthor(user);
         userRepository.saveAndFlush(user);
+        tweetRepository.saveAndFlush(newTweet);
 
         return tweetMapper.entityTodto(newTweet);
     }
@@ -341,8 +365,12 @@ public class TweetServiceImpl implements TweetService{
         Tweet reply = tweetMapper.requestDtoToEntity(tweetRequestDto);
         reply.setDeleted(false);
         reply.setAuthor(replyUser);
+        reply.setPosted(Timestamp.valueOf(LocalDateTime.now()));
         tweetToReplyTo.getReplies().add(reply);
         reply.setInReplyTo(tweetToReplyTo);
+        
+        tweetRepository.saveAndFlush(reply);
+        tweetRepository.saveAndFlush(tweetToReplyTo);
 
         return tweetMapper.entityTodto(reply);
     }
